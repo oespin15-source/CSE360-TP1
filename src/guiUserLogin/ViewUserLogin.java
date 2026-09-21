@@ -60,7 +60,7 @@ public class ViewUserLogin {
 
 	private static Button button_Quit = new Button("Quit");
 
-	private static Stage theStage;	
+	public static Stage theStage;	
 	private static Pane theRootPane;
 	public static Scene theUserLoginScene = null;	
 
