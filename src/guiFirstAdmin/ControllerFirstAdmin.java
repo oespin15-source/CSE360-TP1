@@ -1,9 +1,12 @@
 package guiFirstAdmin;
 
 import java.sql.SQLException;
+
 import database.Database;
 import entityClasses.User;
 import javafx.stage.Stage;
+import inputValidation.UserNameRecognizer;
+import inputValidation.PasswordEvaluator;
 
 /*******
  * <p> Title: ControllerFirstAdmin Class. </p>
@@ -65,6 +68,7 @@ public class ControllerFirstAdmin {
 	 */
 	protected static void setAdminUsername() {
 		adminUsername = ViewFirstAdmin.text_AdminUsername.getText();
+		ViewFirstAdmin.label_UsernameError.setText("");
 	}
 	
 	
@@ -76,8 +80,23 @@ public class ControllerFirstAdmin {
 	 * 
 	 */
 	protected static void setAdminPassword1() {
-		adminPassword1 = ViewFirstAdmin.text_AdminPassword1.getText();
-		ViewFirstAdmin.label_PasswordsDoNotMatch.setText("");
+	    adminPassword1 = ViewFirstAdmin.text_AdminPassword1.getText();
+
+	    if (adminPassword1.isEmpty()) {
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("");
+	        return;
+	    }
+
+	    String passwordErrorMessage =
+	            PasswordEvaluator.evaluatePassword(adminPassword1);
+
+	    if (passwordErrorMessage.isEmpty()) {
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
+	                "Password satisfies all requirements.");
+	    } else {
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
+	                passwordErrorMessage);
+	    }
 	}
 	
 	
@@ -103,6 +122,23 @@ public class ControllerFirstAdmin {
 	 * 
 	 */
 	protected static void doSetupAdmin(Stage ps, int r) {
+		
+		// Validate the username before using it to create the Admin account.
+		String usernameErrorMessage =
+				UserNameRecognizer.checkForValidUserName(adminUsername);
+		
+		if (!usernameErrorMessage.isEmpty()) {
+			ViewFirstAdmin.label_UsernameError.setText(usernameErrorMessage);
+			return;
+		}
+		
+		String passwordErrorMessage =
+		        PasswordEvaluator.evaluatePassword(adminPassword1);
+
+		if (!passwordErrorMessage.isEmpty()) {
+		    ViewFirstAdmin.label_PasswordsDoNotMatch.setText(passwordErrorMessage);
+		    return;
+		}
 		
 		// Make sure the two passwords are the same
 		if (adminPassword1.compareTo(adminPassword2) == 0) {
@@ -147,4 +183,3 @@ public class ControllerFirstAdmin {
 		System.exit(0);
 	}	
 }
-

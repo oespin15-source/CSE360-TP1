@@ -1,10 +1,10 @@
 package guiNewAccount;
 
 import java.sql.SQLException;
-
 import database.Database;
 import entityClasses.User;
-
+import inputValidation.UserNameRecognizer;
+import inputValidation.PasswordEvaluator;
 /*******
  * <p> Title: ControllerNewAccount Class. </p>
  * 
@@ -66,6 +66,24 @@ public class ControllerNewAccount {
 		// that the two password fields are the same before we do anything with it.)
 		String username = ViewNewAccount.text_Username.getText();
 		String password = ViewNewAccount.text_Password1.getText();
+		
+		String usernameErrorMessage =
+				UserNameRecognizer.checkForValidUserName(username);
+
+		if (!usernameErrorMessage.isEmpty()) {
+			ViewNewAccount.alertUsernameError.setContentText(usernameErrorMessage);
+			ViewNewAccount.alertUsernameError.showAndWait();
+			return;
+		}
+		
+		String passwordErrorMessage =
+		        PasswordEvaluator.evaluatePassword(password);
+
+		if (!passwordErrorMessage.isEmpty()) {
+			ViewNewAccount.alertPasswordError.setContentText(passwordErrorMessage);
+			ViewNewAccount.alertPasswordError.showAndWait();
+		    return;
+		}
 		
 		// Display key information to the log
 		System.out.println("** Account for Username: " + username + "; theInvitationCode: "+
@@ -130,6 +148,26 @@ public class ControllerNewAccount {
 			ViewNewAccount.text_Password2.setText("");
 			ViewNewAccount.alertUsernamePasswordError.showAndWait();
 		}
+	}
+	
+	protected static void validatePassword() {
+	    String password = ViewNewAccount.text_Password1.getText();
+
+	    if (password.isEmpty()) {
+	        ViewNewAccount.label_PasswordRequirements.setText("");
+	        return;
+	    }
+
+	    String passwordErrorMessage =
+	            PasswordEvaluator.evaluatePassword(password);
+
+	    if (passwordErrorMessage.isEmpty()) {
+	        ViewNewAccount.label_PasswordRequirements.setText(
+	                "Password satisfies all requirements.");
+	    } else {
+	        ViewNewAccount.label_PasswordRequirements.setText(
+	                passwordErrorMessage);
+	    }
 	}
 
 	

@@ -68,6 +68,16 @@ public class ControllerUserLogin {
 		String password = ViewUserLogin.text_Password.getText();
     	boolean loginResult = false;
     	
+    	// The username field on the login page refers to an existing username,
+    	// so only ensure that the input is not excessively large.
+    	// Check input sizes before using them.
+    	if (username.length() > 32 || password.length() > 64) {
+    	    ViewUserLogin.alertUsernamePasswordError.setContentText(
+    	            "Incorrect username/password. Try again!");
+    	    ViewUserLogin.alertUsernamePasswordError.showAndWait();
+    	    return;
+    	}
+    	
 		// Fetch the user and verify the username
      	if (theDatabase.getUserAccountDetails(username) == false) {
      		// Don't provide too much information.  Don't say the username is invalid or the

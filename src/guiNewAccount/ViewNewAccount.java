@@ -54,12 +54,19 @@ public class ViewNewAccount {
     protected static PasswordField text_Password2 = new PasswordField();
     protected static Button button_UserSetup = new Button("User Setup");
     protected static TextField text_Invitation = new TextField();
+    protected static Label label_PasswordRequirements = new Label();
 
 	// This alert is used should the invitation code be invalid
     protected static Alert alertInvitationCodeIsInvalid = new Alert(AlertType.INFORMATION);
 
 	// This alert is used should the user enter two passwords that do not match
 	protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
+	
+	// This alert is used should the user enter an invalid username
+	protected static Alert alertUsernameError = new Alert(AlertType.INFORMATION);
+	
+	// This alert is used should the user enter an invalid password
+	protected static Alert alertPasswordError = new Alert(AlertType.INFORMATION);
 
     protected static Button button_Quit = new Button("Quit");
 
@@ -136,7 +143,7 @@ public class ViewNewAccount {
     	// Place all of the established GUI elements into the pane
     	theRootPane.getChildren().clear();
     	theRootPane.getChildren().addAll(label_NewUserCreation, label_NewUserLine, text_Username,
-    			text_Password1, text_Password2, button_UserSetup, button_Quit);    	
+    			text_Password1, text_Password2, label_PasswordRequirements, button_UserSetup, button_Quit);    	
 
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: New User Account Setup");	
@@ -177,9 +184,15 @@ public class ViewNewAccount {
 		setupTextUI(text_Password1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210, true);
 		text_Password1.setPromptText("Enter the Password");
 		
+		text_Password1.textProperty().addListener((_, _, _) -> {
+		    ControllerNewAccount.validatePassword();
+		});
+		
 		// Establish the text input operand field to confirm the password
 		setupTextUI(text_Password2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
 		text_Password2.setPromptText("Enter the Password Again");
+		
+		setupLabelUI(label_PasswordRequirements, "Arial", 16, width, Pos.CENTER, 0, 310);
 		
 		// If the invitation code is wrong, this alert dialog will tell the user
 		alertInvitationCodeIsInvalid.setTitle("Invalid Invitation Code");
@@ -190,6 +203,14 @@ public class ViewNewAccount {
 		alertUsernamePasswordError.setTitle("Passwords Do Not Match");
 		alertUsernamePasswordError.setHeaderText("The two passwords must be identical.");
 		alertUsernamePasswordError.setContentText("Correct the passwords and try again.");
+		
+		// If the username is invalid, this alert dialog will tell the user
+		alertUsernameError.setTitle("Invalid Username");
+		alertUsernameError.setHeaderText("The username is not valid.");
+		
+		// If the password is invalid, this alert dialog will tell the user
+		alertPasswordError.setTitle("Invalid Password");
+		alertPasswordError.setHeaderText("The password does not meet the requirements.");
 
         // Set up the account creation and login
         setupButtonUI(button_UserSetup, "Dialog", 18, 200, Pos.CENTER, 475, 210);
