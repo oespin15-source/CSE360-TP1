@@ -91,8 +91,13 @@ public class ControllerUserLogin {
 		
 		// Check to see that the login password matches the account password
     	String actualPassword = theDatabase.getCurrentPassword();
-    	
-    	if (password.compareTo(actualPassword) != 0) {
+
+		// First check to see if the login password matches the one-time password for resetting the account password
+		boolean oneTimePasswordCheck = false;
+    	if (password.compareTo(ControllerSetOneTimePassword.GetTheOneTimePassword()) == 0) {
+    		oneTimePasswordCheck = true;
+    	}
+    	else if (password.compareTo(actualPassword) != 0) {
     		ViewUserLogin.alertUsernamePasswordError.setContentText(
     				"Incorrect username/password. Try again!");
     		ViewUserLogin.alertUsernamePasswordError.showAndWait();
@@ -106,6 +111,12 @@ public class ControllerUserLogin {
     			theDatabase.getCurrentPreferredFirstName(), theDatabase.getCurrentEmailAddress(), 
     			theDatabase.getCurrentAdminRole(), 
     			theDatabase.getCurrentNewRole1(), theDatabase.getCurrentNewRole2());
+
+		// Redirect to the password reset page if applicable
+    	if (oneTimePasswordCheck == true) {
+    		guiResetPassword.ControllerResetPassword.SetUsername(username);
+    		guiResetPassword.ViewResetPassword.displayResetPassword(ts, user);
+    	}
     	
     	// See which home page dispatch to use
 		int numberOfRoles = theDatabase.getNumberOfRoles(user);		
