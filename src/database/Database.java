@@ -351,6 +351,23 @@ public class Database {
 	        e.printStackTrace();
 	    }
 	    return false; // If an error occurs, assume user doesn't exist
+	    
+	}
+	
+	//Delete User Implementation
+	
+	public boolean deleteUser(String username) {
+	    String query = "DELETE FROM userDB WHERE userName = ?";
+
+	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+	        pstmt.setString(1, username);
+
+	        int rowsDeleted = pstmt.executeUpdate();
+	        return rowsDeleted > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 
 	
