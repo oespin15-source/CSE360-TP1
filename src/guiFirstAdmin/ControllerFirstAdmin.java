@@ -168,6 +168,34 @@ public class ControllerFirstAdmin {
 					"The two passwords must match. Please try again!");
 		}
 	}
+
+
+	/**********
+	 * <p> Method: public updateStrength() </p>
+	 * 
+	 * <p> Description: This method is called when the user adds text to the first 
+	 * password text box. It updates the progress bar's strength score.
+	 * 
+	 */	
+	protected static void updateStrength() {
+		String password = ViewFirstAdmin.text_AdminPassword1.getText();
+		double strengthScore = password.length();
+        
+		// Update the bar
+		ViewFirstAdmin.Bar_passwordStrength.setProgress(strengthScore);
+        
+        // Update the colors and text of the label
+        if (strengthScore <= 16) {
+        	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: red;");
+        	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Weak");
+        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: orange;");
+        	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Medium");
+        } else {
+        	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: green;");
+        	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Strong");
+        }
+    }
 	
 	
 	/**********
