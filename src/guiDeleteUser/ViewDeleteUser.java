@@ -13,6 +13,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+/*******
+ * <p> Title: ViewDeleteUser Class. </p>
+ *
+ * <p> Description: Provides the user interface for deleting a user
+ * account. The view displays the available users, allows an administrator
+ * to select a user for deletion, and provides controls to delete the
+ * selected user or return to the Admin Home page. </p>
+ *
+ * @author Obed Espinoza
+ *
+ * @version 1.00 2026-09-23 
+ */
 
 public class ViewDeleteUser {
 
