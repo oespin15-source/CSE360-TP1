@@ -1,4 +1,16 @@
 package inputValidation;
+/*******
+ * <p> Title: PasswordEvaluator Class. </p>
+ *
+ * <p> Description: Evaluates a password to determine whether it
+ * satisfies the required password rules, including uppercase and
+ * lowercase letters, numeric digits, special characters, minimum
+ * length, and maximum length. </p>
+ *
+ * @author Obed Espinoza
+ *
+ * @version 1.00 2026-09-23 Updated for TP1 input validation
+ */
 
 public class PasswordEvaluator {
 
