@@ -150,6 +150,16 @@ public class ViewUserUpdate {
 	 * @param user specifies the User whose roles will be updated
 	 *
 	 */
+	
+	
+	private static void showNameTooLongAlert(String fieldName) {
+	    Alert alert = new Alert(Alert.AlertType.ERROR);
+	    alert.setTitle("Input Too Long");
+	    alert.setHeaderText(fieldName + " is too long.");
+	    alert.setContentText(fieldName + " cannot exceed " + MAX_NAME_LENGTH + " characters.");
+	    alert.showAndWait();
+	}
+	
 	public static void displayUserUpdate(Stage ps, User user) {
 		
 		// Establish the references to the GUI and the current user
@@ -272,7 +282,7 @@ public class ViewUserUpdate {
                 String input = result.get();
 
                 if (!isValidLength(input, MAX_NAME_LENGTH)) {
-                    System.out.println("*** Error *** First name cannot exceed 50 characters.");
+                    showNameTooLongAlert("First name");
                     return;
                 }
 
@@ -300,7 +310,7 @@ public class ViewUserUpdate {
                 String input = result.get();
 
                 if (!isValidLength(input, MAX_NAME_LENGTH)) {
-                    System.out.println("*** Error *** Middle name cannot exceed 50 characters.");
+                    showNameTooLongAlert("Middle Name");
                     return;
                 }
 
@@ -328,7 +338,7 @@ public class ViewUserUpdate {
                 String input = result.get();
 
                 if (!isValidLength(input, MAX_NAME_LENGTH)) {
-                    System.out.println("*** Error *** Last name cannot exceed 50 characters.");
+                    showNameTooLongAlert("Last Name");
                     return;
                 }
 
@@ -357,8 +367,9 @@ public class ViewUserUpdate {
             if (result.isPresent()) {
                 String input = result.get();
 
+           
                 if (!isValidLength(input, MAX_NAME_LENGTH)) {
-                    System.out.println("*** Error *** Preferred first name cannot exceed 50 characters.");
+                    showNameTooLongAlert("Preferred first name");
                     return;
                 }
 
