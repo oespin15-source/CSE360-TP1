@@ -159,8 +159,17 @@ public class ViewUserLogin {
 		// Set up the setup button
 		setupButtonUI(button_SetupAccount, "Dialog", 18, 200, Pos.CENTER, 475, 340);
 		button_SetupAccount.setOnAction((_) -> {
-			System.out.println("**** Calling doSetupAccount");
-			ControllerUserLogin.doSetupAccount(theStage, text_Invitation.getText());
+		    String invitationCode = text_Invitation.getText();
+
+		    if (invitationCode.length() != 6) {
+		        alertUsernamePasswordError.setContentText(
+		                "Invitation code must be 6 characters.");
+		        alertUsernamePasswordError.showAndWait();
+		        return;
+		    }
+
+		    System.out.println("**** Calling doSetupAccount");
+		    ControllerUserLogin.doSetupAccount(theStage, invitationCode);
 		});
 
 		// Set up the Quit button  

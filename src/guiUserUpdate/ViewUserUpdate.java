@@ -12,6 +12,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import entityClasses.User;
+import inputValidation.EmailAddressRecognizer;
+import javafx.scene.control.Alert;
 
 /*******
  * <p> Title: ViewUserUpdate Class. </p>
@@ -48,6 +50,9 @@ public class ViewUserUpdate {
 	
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
+	
+	private static final int MAX_NAME_LENGTH = 50;
+	private static final int MAX_EMAIL_LENGTH = 254;
 
 	
 	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
@@ -260,40 +265,85 @@ public class ViewUserUpdate {
         setupLabelUI(label_FirstName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 200);
         setupLabelUI(label_CurrentFirstName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 200);
         setupButtonUI(button_UpdateFirstName, "Dialog", 18, 275, Pos.CENTER, 500, 193);
-        button_UpdateFirstName.setOnAction((_) -> {result = dialogUpdateFirstName.showAndWait();
-        	result.ifPresent(_ -> theDatabase.updateFirstName(theUser.getUserName(), result.get()));
-        	theDatabase.getUserAccountDetails(theUser.getUserName());
-         	String newName = theDatabase.getCurrentFirstName();
-           	theUser.setFirstName(newName);
-        	if (newName == null || newName.length() < 1)label_CurrentFirstName.setText("<none>");
-        	else label_CurrentFirstName.setText(newName);
-         	});
+        button_UpdateFirstName.setOnAction((_) -> {
+            result = dialogUpdateFirstName.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                if (!isValidLength(input, MAX_NAME_LENGTH)) {
+                    System.out.println("*** Error *** First name cannot exceed 50 characters.");
+                    return;
+                }
+
+                theDatabase.updateFirstName(theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newName = theDatabase.getCurrentFirstName();
+            theUser.setFirstName(newName);
+
+            if (newName == null || newName.length() < 1)
+                label_CurrentFirstName.setText("<none>");
+            else
+                label_CurrentFirstName.setText(newName);
+        });
                
         // Middle Name
         setupLabelUI(label_MiddleName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 250);
         setupLabelUI(label_CurrentMiddleName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 250);
         setupButtonUI(button_UpdateMiddleName, "Dialog", 18, 275, Pos.CENTER, 500, 243);
-        button_UpdateMiddleName.setOnAction((_) -> {result = dialogUpdateMiddleName.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateMiddleName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newName = theDatabase.getCurrentMiddleName();
-           	theUser.setMiddleName(newName);
-        	if (newName == null || newName.length() < 1)label_CurrentMiddleName.setText("<none>");
-        	else label_CurrentMiddleName.setText(newName);
-    		});
+        button_UpdateMiddleName.setOnAction((_) -> {
+            result = dialogUpdateMiddleName.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                if (!isValidLength(input, MAX_NAME_LENGTH)) {
+                    System.out.println("*** Error *** Middle name cannot exceed 50 characters.");
+                    return;
+                }
+
+                theDatabase.updateMiddleName(theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newName = theDatabase.getCurrentMiddleName();
+            theUser.setMiddleName(newName);
+
+            if (newName == null || newName.length() < 1)
+                label_CurrentMiddleName.setText("<none>");
+            else
+                label_CurrentMiddleName.setText(newName);
+        });
         
         // Last Name
         setupLabelUI(label_LastName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 300);
         setupLabelUI(label_CurrentLastName, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 300);
         setupButtonUI(button_UpdateLastName, "Dialog", 18, 275, Pos.CENTER, 500, 293);
-        button_UpdateLastName.setOnAction((_) -> {result = dialogUpdateLastName.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateLastName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newName = theDatabase.getCurrentLastName();
-           	theUser.setLastName(newName);
-      	if (newName == null || newName.length() < 1)label_CurrentLastName.setText("<none>");
-        	else label_CurrentLastName.setText(newName);
-    		});
+        button_UpdateLastName.setOnAction((_) -> {
+            result = dialogUpdateLastName.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                if (!isValidLength(input, MAX_NAME_LENGTH)) {
+                    System.out.println("*** Error *** Last name cannot exceed 50 characters.");
+                    return;
+                }
+
+                theDatabase.updateLastName(theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newName = theDatabase.getCurrentLastName();
+            theUser.setLastName(newName);
+
+            if (newName == null || newName.length() < 1)
+                label_CurrentLastName.setText("<none>");
+            else
+                label_CurrentLastName.setText(newName);
+        });
         
         // Preferred First Name
         setupLabelUI(label_PreferredFirstName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 
@@ -301,29 +351,65 @@ public class ViewUserUpdate {
         setupLabelUI(label_CurrentPreferredFirstName, "Arial", 18, 260, Pos.BASELINE_LEFT, 
         		200, 350);
         setupButtonUI(button_UpdatePreferredFirstName, "Dialog", 18, 275, Pos.CENTER, 500, 343);
-        button_UpdatePreferredFirstName.setOnAction((_) -> 
-        	{result = dialogUpdatePreferredFirstName.showAndWait();
-    		result.ifPresent(_ -> 
-    		theDatabase.updatePreferredFirstName(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newName = theDatabase.getCurrentPreferredFirstName();
-           	theUser.setPreferredFirstName(newName);
-         	if (newName == null || newName.length() < 1)label_CurrentPreferredFirstName.setText("<none>");
-        	else label_CurrentPreferredFirstName.setText(newName);
-     		});
+        button_UpdatePreferredFirstName.setOnAction((_) -> {
+            result = dialogUpdatePreferredFirstName.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                if (!isValidLength(input, MAX_NAME_LENGTH)) {
+                    System.out.println("*** Error *** Preferred first name cannot exceed 50 characters.");
+                    return;
+                }
+
+                theDatabase.updatePreferredFirstName(theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newName = theDatabase.getCurrentPreferredFirstName();
+            theUser.setPreferredFirstName(newName);
+
+            if (newName == null || newName.length() < 1)
+                label_CurrentPreferredFirstName.setText("<none>");
+            else
+                label_CurrentPreferredFirstName.setText(newName);
+        });
         
         // Email Address
         setupLabelUI(label_EmailAddress, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 400);
         setupLabelUI(label_CurrentEmailAddress, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 400);
         setupButtonUI(button_UpdateEmailAddress, "Dialog", 18, 275, Pos.CENTER, 500, 393);
-        button_UpdateEmailAddress.setOnAction((_) -> {result = dialogUpdateEmailAddresss.showAndWait();
-    		result.ifPresent(_ -> theDatabase.updateEmailAddress(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newEmail = theDatabase.getCurrentEmailAddress();
-           	theUser.setEmailAddress(newEmail);
-        	if (newEmail == null || newEmail.length() < 1)label_CurrentEmailAddress.setText("<none>");
-        	else label_CurrentEmailAddress.setText(newEmail);
- 			});
+        button_UpdateEmailAddress.setOnAction((_) -> {
+            result = dialogUpdateEmailAddresss.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                String errorMessage =
+                        EmailAddressRecognizer.checkEmailAddress(input);
+
+                if (!errorMessage.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Email Address");
+                    alert.setHeaderText("The email address is invalid.");
+                    alert.setContentText(errorMessage);
+                    alert.showAndWait();
+                    return;
+                }
+
+                theDatabase.updateEmailAddress(
+                        theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newEmail = theDatabase.getCurrentEmailAddress();
+            theUser.setEmailAddress(newEmail);
+
+            if (newEmail == null || newEmail.length() < 1)
+                label_CurrentEmailAddress.setText("<none>");
+            else
+                label_CurrentEmailAddress.setText(newEmail);
+        });
         
         // Set up the button to proceed to this user's home page
         setupButtonUI(button_ProceedToUserHomePage, "Dialog", 18, 300, 
@@ -344,6 +430,10 @@ public class ViewUserUpdate {
         		button_UpdatePreferredFirstName, button_UpdateEmailAddress,
         		label_EmailAddress, label_CurrentEmailAddress, 
         		button_ProceedToUserHomePage);
+	}
+	
+	private static boolean isValidLength(String input, int maxLength) {
+	    return input != null && input.length() <= maxLength;
 	}
 	
 	

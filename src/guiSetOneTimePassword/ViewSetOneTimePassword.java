@@ -10,6 +10,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import inputValidation.PasswordEvaluator;
+import javafx.scene.control.Alert;
 
 /*******
  * <p> Title: ViewSetOneTimePassword Class. </p>
@@ -160,7 +162,30 @@ public class ViewSetOneTimePassword {
 		
 		// Button to set the password
 		setupButtonUI(button_SetPassword, "Dialog", 18, 200, Pos.CENTER, 300, 310);
-		button_SetPassword.setOnAction((_) -> {ControllerSetOneTimePassword.SetTheOneTimePassword(); });
+		button_SetPassword.setOnAction((_) -> {
+		    String password = text_SetOneTimePassword.getText();
+
+		    String errorMessage = PasswordEvaluator.evaluatePassword(password);
+
+		    if (!errorMessage.isEmpty()) {
+		        Alert alert = new Alert(Alert.AlertType.ERROR);
+		        alert.setTitle("Invalid Password");
+		        alert.setHeaderText("The one-time password is invalid.");
+		        alert.setContentText(errorMessage);
+		        alert.showAndWait();
+		        return;
+		    }
+
+		    ControllerSetOneTimePassword.SetTheOneTimePassword();
+		    
+		    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+		    successAlert.setTitle("Password Set");
+		    successAlert.setHeaderText(null);
+		    successAlert.setContentText("The one-time password has been set successfully.");
+		    successAlert.showAndWait();
+
+		    text_SetOneTimePassword.clear();
+		});
 		
 		// GUI Area 3		
 		setupButtonUI(button_Return, "Dialog", 18, 210, Pos.CENTER, 20, 540);
