@@ -170,6 +170,34 @@ public class ControllerNewAccount {
 	    }
 	}
 
+
+	/**********
+	 * <p> Method: public updateStrength() </p>
+	 * 
+	 * <p> Description: This method is called when the user adds text to the first 
+	 * password text box. It updates the progress bar's strength score.
+	 * 
+	 */	
+	protected static void updateStrength() {
+		String password = ViewNewAccount.text_Password1.getText();
+		double strengthScore = password.length();
+        
+		// Update the bar
+        ViewNewAccount.Bar_passwordStrength.setProgress(strengthScore);
+        
+        // Update the colors and text of the label
+        if (strengthScore <= 16) {
+        	ViewNewAccount.Bar_passwordStrength.setStyle("-fx-accent: red;");
+        	ViewNewAccount.label_StrengthLabel.setText("Strength: Weak");
+        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        	ViewNewAccount.Bar_passwordStrength.setStyle("-fx-accent: orange;");
+        	ViewNewAccount.label_StrengthLabel.setText("Strength: Medium");
+        } else {
+        	ViewNewAccount.Bar_passwordStrength.setStyle("-fx-accent: green;");
+        	ViewNewAccount.label_StrengthLabel.setText("Strength: Strong");
+        }
+    }
+
 	
 	/**********
 	 * <p> Method: public performQuit() </p>
