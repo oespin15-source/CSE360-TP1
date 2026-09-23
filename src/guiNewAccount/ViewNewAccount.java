@@ -55,6 +55,8 @@ public class ViewNewAccount {
     protected static Button button_UserSetup = new Button("User Setup");
     protected static TextField text_Invitation = new TextField();
     protected static Label label_PasswordRequirements = new Label();
+	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
+    protected static Label label_StrengthLabel = new Label();
 
 	// This alert is used should the invitation code be invalid
     protected static Alert alertInvitationCodeIsInvalid = new Alert(AlertType.INFORMATION);
@@ -143,7 +145,8 @@ public class ViewNewAccount {
     	// Place all of the established GUI elements into the pane
     	theRootPane.getChildren().clear();
     	theRootPane.getChildren().addAll(label_NewUserCreation, label_NewUserLine, text_Username,
-    			text_Password1, text_Password2, label_PasswordRequirements, button_UserSetup, button_Quit);    	
+    			text_Password1, text_Password2, label_PasswordRequirements, button_UserSetup, button_Quit,
+				Bar_passwordStrength, label_StrengthLabel);    	
 
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: New User Account Setup");	
@@ -186,13 +189,19 @@ public class ViewNewAccount {
 		
 		text_Password1.textProperty().addListener((_, _, _) -> {
 		    ControllerNewAccount.validatePassword();
+			ControllerNewAccount.updateStrength();
 		});
 		
 		// Establish the text input operand field to confirm the password
 		setupTextUI(text_Password2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
 		text_Password2.setPromptText("Enter the Password Again");
-		
+
+		// Label for Password Requirements
 		setupLabelUI(label_PasswordRequirements, "Arial", 16, width, Pos.CENTER, 0, 310);
+
+		// Progress bar for password strength
+		setupProgressBarUI(Bar_passwordStrength, 300, 15, 50, 360);
+		setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 50, 380);
 		
 		// If the invitation code is wrong, this alert dialog will tell the user
 		alertInvitationCodeIsInvalid.setTitle("Invalid Invitation Code");
@@ -272,4 +281,20 @@ public class ViewNewAccount {
 		t.setLayoutY(y);		
 		t.setEditable(e);
 	}	
+
+	/**********
+	 * Private local method to initialize the standard fields for a progress bar
+	 * 
+	 * @param p		The progress bar object to be initialized
+	 * @param w		The width of the progress bar
+	 * @param h		The height of the progress bar
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupProgressBarUI(ProgressBar p, double w, double h, double x, double y){
+		p.setPrefWidth(w);
+		p.setPrefHeight(h);
+		p.setLayoutX(x);
+		p.setLayoutY(y);		
+	}
 }
