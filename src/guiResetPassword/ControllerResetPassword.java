@@ -142,7 +142,35 @@ public class ControllerResetPassword {
 	                passwordErrorMessage);
 	    }
 	}
-	
+
+
+	/**********
+	 * <p> Method: public updateStrength() </p>
+	 * 
+	 * <p> Description: This method is called when the user adds text to the first 
+	 * password text box. It updates the progress bar's strength score.
+	 * 
+	 */	
+	protected static void updateStrength() {
+		String password = ViewResetPassword.text_NewPassword1.getText();
+		double strengthScore = password.length();
+        
+		// Update the bar
+		ViewResetPassword.Bar_passwordStrength.setProgress(strengthScore);
+        
+        // Update the colors and text of the label
+        if (strengthScore <= 16) {
+        	ViewResetPassword.Bar_passwordStrength.setStyle("-fx-accent: red;");
+        	ViewResetPassword.label_StrengthLabel.setText("Strength: Weak");
+        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        	ViewResetPassword.Bar_passwordStrength.setStyle("-fx-accent: orange;");
+        	ViewResetPassword.label_StrengthLabel.setText("Strength: Medium");
+        } else {
+        	ViewResetPassword.Bar_passwordStrength.setStyle("-fx-accent: green;");
+        	ViewResetPassword.label_StrengthLabel.setText("Strength: Strong");
+        }
+    }
+
 	
 	/**********
 	 * <p> Method: performReturn() </p>
