@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
@@ -46,6 +47,8 @@ public class ViewResetPassword {
 	protected static Button button_PasswordReset = new Button("Reset Password");
 	protected static Label label_PasswordsDoNotMatch = new Label();
 	protected static Label label_PasswordRequirements = new Label();
+	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
+    protected static Label label_StrengthLabel = new Label();
 	
 	// This alert is used should the user enter an invalid password
 	protected static Alert alertPasswordError = new Alert(AlertType.INFORMATION);
@@ -107,7 +110,7 @@ public class ViewResetPassword {
     	theRootPane.getChildren().clear();
     	theRootPane.getChildren().addAll(label_ApplicationTitle, label_ResetPasswordLine,
     			button_PasswordReset, text_NewPassword1, text_NewPassword2, button_Return, button_Quit,
-    			label_PasswordRequirements);
+    			label_PasswordRequirements, Bar_passwordStrength, label_StrengthLabel);
     	
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: Reset Password");	
@@ -142,7 +145,9 @@ public class ViewResetPassword {
 		setupTextUI(text_NewPassword1, "Arial", 20, 300, Pos.CENTER, 250, 260, true);
 		text_NewPassword1.setPromptText("Enter New Password");
 		text_NewPassword1.textProperty().addListener((_, _, _) 
-				-> {ControllerResetPassword.ResetThePassword1(); ControllerResetPassword.validatePassword();}); 
+				-> {ControllerResetPassword.ResetThePassword1(); 
+					ControllerResetPassword.validatePassword();
+				    ControllerResetPassword.updateStrength();}); 
 		
 		// Establish the text input operand field for the password 2
 		setupTextUI(text_NewPassword2, "Arial", 20, 300, Pos.CENTER, 250, 310, true);
@@ -156,6 +161,10 @@ public class ViewResetPassword {
         
         // Label to display password requirements
         setupLabelUI(label_PasswordRequirements, "Arial", 16, width, Pos.CENTER, 0, 410);
+
+		// Progress bar for password strength
+     	setupProgressBarUI(Bar_passwordStrength, 300, 15, 250, 460);
+     	setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 350, 480);
 		
         // If the password is invalid, this alert dialog will tell the user
      	alertPasswordError.setTitle("Invalid Password");
@@ -240,6 +249,23 @@ public class ViewResetPassword {
 		t.setLayoutX(x);
 		t.setLayoutY(y);		
 		t.setEditable(e);
+	}
+
+
+	/**********
+	 * Private local method to initialize the standard fields for a progress bar
+	 * 
+	 * @param p		The progress bar object to be initialized
+	 * @param w		The width of the progress bar
+	 * @param h		The height of the progress bar
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupProgressBarUI(ProgressBar p, double w, double h, double x, double y){
+		p.setPrefWidth(w);
+		p.setPrefHeight(h);
+		p.setLayoutX(x);
+		p.setLayoutY(y);		
 	}
 
 }
