@@ -7,6 +7,19 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 
+/*******
+ * <p> Title: ControllerDeleteUser Class. </p>
+ *
+ * <p> Description: Handles the logic for deleting a user account.
+ * The controller verifies that a user has been selected, prevents an
+ * administrator from deleting their own account, asks for confirmation,
+ * and deletes the selected user from the database. </p>
+ *
+ * @author Obed Espinoza
+ *
+ * @version 1.00 2026-09-23 Initial implementation for TP1
+ */
+
 public class ControllerDeleteUser {
 
     private static Database theDatabase =
