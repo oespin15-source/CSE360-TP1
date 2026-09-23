@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
@@ -62,6 +63,8 @@ public class ViewFirstAdmin {
 	protected static PasswordField text_AdminPassword1 = new PasswordField();
 	protected static PasswordField text_AdminPassword2 = new PasswordField();
 	private static Button button_AdminSetup = new Button("Setup Admin Account");
+	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
+    protected static Label label_StrengthLabel = new Label();
 
 	// This alert is used should the user enter two passwords that do not match
 	protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
@@ -166,7 +169,8 @@ public class ViewFirstAdmin {
 				true);
 		text_AdminPassword1.setPromptText("Enter Admin Password");
 		text_AdminPassword1.textProperty().addListener((_, _, _)
-				-> {ControllerFirstAdmin.setAdminPassword1(); });
+				-> {ControllerFirstAdmin.setAdminPassword1();
+				    ControllerFirstAdmin.updateStrength(); });
 
 		// Establish the text input operand field for the password
 		setupTextUI(text_AdminPassword2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, 
@@ -174,6 +178,11 @@ public class ViewFirstAdmin {
 		text_AdminPassword2.setPromptText("Enter Admin Password Again");
 		text_AdminPassword2.textProperty().addListener((_, _, _) 
 				-> {ControllerFirstAdmin.setAdminPassword2(); });
+
+
+		// Progress bar for password strength
+		setupProgressBarUI(Bar_passwordStrength, 300, 15, 50, 360);
+		setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 50, 380);
 
 		// Set up the Log In button
 		setupButtonUI(button_AdminSetup, "Dialog", 18, 200, Pos.CENTER, 475, 210);
@@ -194,7 +203,7 @@ public class ViewFirstAdmin {
 		theRootPane.getChildren().addAll(label_ApplicationTitle, label_TitleLine1,
 				label_TitleLine2, text_AdminUsername, text_AdminPassword1, 
 				text_AdminPassword2, button_AdminSetup, label_UsernameError, label_PasswordsDoNotMatch,
-				button_Quit);
+				button_Quit, Bar_passwordStrength, label_StrengthLabel);
 	}
 	
 	
@@ -267,4 +276,21 @@ public class ViewFirstAdmin {
 		t.setLayoutY(y);		
 		t.setEditable(e);
 	}	
+
+
+	/**********
+	 * Private local method to initialize the standard fields for a progress bar
+	 * 
+	 * @param p		The progress bar object to be initialized
+	 * @param w		The width of the progress bar
+	 * @param h		The height of the progress bar
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupProgressBarUI(ProgressBar p, double w, double h, double x, double y){
+		p.setPrefWidth(w);
+		p.setPrefHeight(h);
+		p.setLayoutX(x);
+		p.setLayoutY(y);		
+	}
 }
