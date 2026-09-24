@@ -52,8 +52,6 @@ public class ViewUserUpdate {
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 	
 	private static final int MAX_NAME_LENGTH = 50;
-	//	TODO use it
-	private static final int MAX_EMAIL_LENGTH = 254;
 
 	
 	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
