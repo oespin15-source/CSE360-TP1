@@ -32,10 +32,6 @@ public class ControllerAdminHome {
 
 	User Interface Actions for this page
 	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
 	*/
 	
 	/**
@@ -108,8 +104,9 @@ public class ControllerAdminHome {
 	 * 
 	 * Title: setOnetimePassword () Method. </p>
 	 * 
-	 * <p> Description: Protected method that is currently a stub informing the user that
-	 * this function has not yet been implemented. </p>
+	 * <p> Description: Protected method that allows an admin to set a one-time use password for
+	 * another user to use that will allow them to update their password. This password is cleared
+	 * upon usage.</p>
 	 */
 	protected static void setOnetimePassword () {
 		guiSetOneTimePassword.ViewSetOneTimePassword.displaySetOneTimePassword(ViewAdminHome.theStage, 
@@ -121,8 +118,8 @@ public class ControllerAdminHome {
 	 * 
 	 * Title: deleteUser () Method. </p>
 	 * 
-	 * <p> Description: Protected method that is currently a stub informing the user that
-	 * this function has not yet been implemented. </p>
+	 * <p> Description: Protected method that allows an admin to delete another user. Admins cannot 
+	 * remove their own access.</p>
 	 */
 	protected static void deleteUser() {
 	    guiDeleteUser.ViewDeleteUser.displayDeleteUser(
@@ -135,8 +132,8 @@ public class ControllerAdminHome {
 	 * 
 	 * Title: listUsers () Method. </p>
 	 * 
-	 * <p> Description: Protected method that is currently a stub informing the user that
-	 * this function has not yet been implemented. </p>
+	 * <p> Description: Protected method that allows an admin to display every user's username, name, 
+	 * email, and roles. </p>
 	 */
 	protected static void listUsers() {
 		guiListAllUsers.ViewListAllUsers.displayListAllUsers(ViewAdminHome.theStage, 

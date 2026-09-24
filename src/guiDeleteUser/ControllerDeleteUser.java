@@ -1,7 +1,6 @@
 package guiDeleteUser;
 
 import java.util.Optional;
-
 import database.Database;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -25,6 +24,17 @@ public class ControllerDeleteUser {
     private static Database theDatabase =
             applicationMain.FoundationsMain.database;
 
+    /*******
+     * <p> Method: deleteUser() </p>
+     * 
+     * <p> Description: This method first ensures an admin is selected and
+     * that they are not the current user. It asks for permission and waits
+     * for confirmation before removing the user. 
+     *
+     * @author Obed Espinoza
+     *
+     * @version 1.00 2026-09-23 Initial implementation for TP1
+     */
     protected static void deleteUser() {
 
         String username =

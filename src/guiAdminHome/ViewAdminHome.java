@@ -55,34 +55,22 @@ public class ViewAdminHome {
 	*/
 	
 	// These are the application values required by the user interface
-	
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-	
-	// These are the widget attributes for the GUI. There are 5 areas for this GUI.
-	
-	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
-	// and a button to allow this user to update the account settings
+	// These are the widget attributes for the GUI.
 	protected static Label label_PageTitle = new Label();
 	protected static Label label_UserDetails = new Label();
 	protected static Button button_UpdateThisUser = new Button("Account Update");
-
-	// This is a separator and it is used to partition the GUI for various tasks
+	
 	private static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
-	// GUI Area 2: This area is used to provide status of the system.  This basic foundational code
-	// does not have much current status information to display.
 	protected static Label label_NumberOfInvitations = 
 			new Label("Number of Oustanding Invitations: x");
 	protected static Label label_NumberOfUsers = new Label("Number of Users: x");
 	
-	// This is a separator and it is used to partition the GUI for various tasks
 	private static Line line_Separator2 = new Line(20, 165, width-20, 165);
 	
-	// GUI Area 3: This is the first of two areas provided the admin with a set of action buttons
-	// that can be used to perform the tasks allocated to the admin role.  This part is about
-	// inviting potential new users to establish an account and what role that user will have.
 	protected static Label label_Invitations = new Label("Send An Invitation");
 	protected static Label label_InvitationEmailAddress = new Label("Email Address");
 	protected static TextField text_InvitationEmailAddress = new TextField();
@@ -92,44 +80,28 @@ public class ViewAdminHome {
 	protected static Alert alertEmailError = new Alert(AlertType.INFORMATION);
 	protected static Alert alertEmailSent = new Alert(AlertType.INFORMATION);
 	
-	// This is a separator and it is used to partition the GUI for various tasks
 	private static Line line_Separator3 = new Line(20, 255, width-20, 255);
 	
-	// GUI Area 4: This is the second of the two action item areas.  This provides a set of other
-	// admin buttons to use to perform other roles.  Many of these buttons are just stubs and an
-	// alert pops up to inform the admin of this fact.
 	protected static Button button_ManageInvitations = new Button("Manage Invitations");
 	protected static Button button_SetOnetimePassword = new Button("Set a One-Time Password");
 	protected static Button button_DeleteUser = new Button("Delete a User");
 	protected static Button button_ListUsers = new Button("List All Users");
 	protected static Button button_AddRemoveRoles = new Button("Add/Remove Roles");
 	protected static Alert alertNotImplemented = new Alert(AlertType.INFORMATION);
-
-	// This is a separator and it is used to partition the GUI for various tasks
+	
 	private static Line line_Separator4 = new Line(20, 525, width-20,525);
 
-	// GUI Area 5: This is last of the GUI areas.  It is used for quitting the application, logging
-	// out, and on other pages a return is provided so the user can return to a previous page when
-	// the actions on that page are complete.  Be advised that in most cases in this code, the 
-	// return is to a fixed page as opposed to the actual page that invoked the pages.
 	protected static Button button_Logout = new Button("Logout");
 	protected static Button button_Quit = new Button("Quit");
 
-	// This is the end of the GUI objects for the page.
-	
 	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewAdminHome theView;		// Used to determine if instantiation of the class
-												// is needed
-
-	// Reference for the in-memory database so this package has access
+	private static ViewAdminHome theView;		
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
-	
-	protected static Stage theStage;			// The Stage that JavaFX has established for us
-	private static Pane theRootPane;			// The Pane that holds all the GUI widgets 
-	protected static User theUser;				// The current logged in User
-
-	private static Scene theAdminHomeScene;		// The shared Scene each invocation populates
-	private static final int theRole = 1;		// Admin: 1; Role1: 2; Role2: 3
+	protected static Stage theStage;			
+	private static Pane theRootPane;			
+	protected static User theUser;				
+	private static Scene theAdminHomeScene;		
+	private static final int theRole = 1;
 
 	/*-*******************************************************************************************
 
@@ -160,25 +132,19 @@ public class ViewAdminHome {
 	 */
 	public static void displayAdminHome(Stage ps, User user) {
 		
-		// Establish the references to the GUI and the current user
 		theStage = ps;
 		theUser = user;
 		
-		// If not yet established, populate the static aspects of the GUI
-		if (theView == null) theView = new ViewAdminHome();		// Instantiate singleton if needed
+		if (theView == null) theView = new ViewAdminHome();		
 		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
-		theDatabase.getUserAccountDetails(user.getUserName());		// Fetch this user's data
-		applicationMain.FoundationsMain.activeHomePage = theRole;	// Set this as the active Home																	// UserUpdate page
+		theDatabase.getUserAccountDetails(user.getUserName());
+		applicationMain.FoundationsMain.activeHomePage = theRole;	
 
 		// Set the role for potential users to the default (No role selected)
 		combobox_SelectRole.getSelectionModel().select(0);
-				
-		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: Admin Home Page");
-		theStage.setScene(theAdminHomeScene);						// Set this page onto the stage
-		theStage.show();											// Display it to the user
+		theStage.setScene(theAdminHomeScene);						
+		theStage.show();											
 	}
 	
 	/**********
@@ -287,9 +253,6 @@ public class ViewAdminHome {
     		button_Logout,
     		button_Quit
     		);
-		
-		// With theRootPane set up with the common widgets, it is up to displayAdminHome to show
-		// that Pane to the user after the dynamic elements of the widgets have been updated.
 	}
 
 	/*-*******************************************************************************************

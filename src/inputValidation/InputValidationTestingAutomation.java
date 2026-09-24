@@ -4,7 +4,8 @@ package inputValidation;
  * <p> Title: InputValidationTestingAutomation Class. </p>
  *
  * <p> Description: A Java demonstration for automated testing
- * of the input validation used in TP1. </p>
+ * of the input validation used in TP1. uses test cases shown in testcases.pdf and displays
+ * a summary of the results. </p>
  *
  * @author Obed Espinoza
  *
@@ -17,11 +18,17 @@ public class InputValidationTestingAutomation {
 
     /** Counter for the number of failed tests. */
     static int numFailed = 0;
-
+    
+    
     /**
-     * Runs the TP1 input validation test cases and displays
-     * a summary of the results.
+     * <p> Method: main
+     * 
+     * <p> Descriptio: Runs the TP1 input validation test cases and displays
+     * a summary of the test results.
+     *
+     * @param args command-line arguments
      */
+    
     public static void main(String[] args) {
 
         System.out.println("________________________________________");
@@ -98,9 +105,19 @@ public class InputValidationTestingAutomation {
     }
 
     /**
+     * 
+     * <p> Method: perfomrPasswordTestCase
+     * 
+     * <p> Descriptio:
      * Executes a password validation test case using the
      * PasswordEvaluator used by the application.
+     *
+     * @param testCase the number identifying the test case
+     * @param inputText the password input to be tested
+     * @param expectedPass the expected result of the validation
      */
+    
+    
     private static void performPasswordTestCase(
             int testCase,
             String inputText,
@@ -124,8 +141,16 @@ public class InputValidationTestingAutomation {
     }
 
     /**
+     * 
+     * <p> Method: performUsernameTestCase
+     * 
+     * <p> Description
      * Executes a username validation test case using the
      * UserNameRecognizer used by the application.
+     *
+     * @param testCase the number identifying the test case
+     * @param inputText the username input to be tested
+     * @param expectedPass the expected result of the validation
      */
     private static void performUsernameTestCase(
             int testCase,
@@ -148,12 +173,19 @@ public class InputValidationTestingAutomation {
                 resultText.isEmpty(),
                 expectedPass);
     }
-
     /**
+     * 
+     * <p> Method: performEmailTestCase
+     * 
+     * <p> Description
      * Executes an email validation test case using the
      * EmailAddressRecognizer used by the application.
+     *
+     * @param testCase the number identifying the test case
+     * @param inputText the email address input to be tested
+     * @param expectedPass the expected result of the validation
      */
-    private static void performEmailTestCase(
+    static void performEmailTestCase(
             int testCase,
             String inputText,
             boolean expectedPass) {
@@ -176,7 +208,19 @@ public class InputValidationTestingAutomation {
     }
 
    
-     //Executes a maximum-length validation test case.
+    /**
+     * 
+     * <p> Method: performLengthTestCase
+     * 
+     * <p> Description
+     * Executes a maximum-length validation test case to determine
+     * whether the input is within the allowed maximum length.
+     *
+     * @param testCase the number identifying the test case
+     * @param inputText the input text whose length is being tested
+     * @param maximumLength the maximum number of characters allowed
+     * @param expectedPass the expected result of the validation
+     */
     private static void performLengthTestCase(
             int testCase,
             String inputText,
@@ -200,7 +244,19 @@ public class InputValidationTestingAutomation {
                 expectedPass);
     }
 
-    //Executes an exact-length validation test case
+    /**
+     * 
+     * <p> Method: performExactLengthTestCase
+     * 
+     * <p> Description
+     * Executes an exact-length validation test case to determine
+     * whether the input contains the required number of characters.
+     *
+     * @param testCase the number identifying the test case
+     * @param inputText the input text whose length is being tested
+     * @param requiredLength the exact number of characters required
+     * @param expectedPass the expected result of the validation
+     */
     private static void performExactLengthTestCase(
             int testCase,
             String inputText,
@@ -228,8 +284,15 @@ public class InputValidationTestingAutomation {
     }
 
     /**
+     * 
+     * <p> Method: evaluateResult
+     * 
+     * <p> Description
      * Compares the actual validation result with the expected
      * result and updates the test counters.
+     *
+     * @param actualPass the actual result produced by the validation
+     * @param expectedPass the expected result for the test case
      */
     private static void evaluateResult(
             boolean actualPass,
