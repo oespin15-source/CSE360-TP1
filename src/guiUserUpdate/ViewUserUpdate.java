@@ -52,6 +52,7 @@ public class ViewUserUpdate {
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 	
 	private static final int MAX_NAME_LENGTH = 50;
+	//	TODO use it
 	private static final int MAX_EMAIL_LENGTH = 254;
 
 	
@@ -270,6 +271,31 @@ public class ViewUserUpdate {
         setupLabelUI(label_Password, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 150);
         setupLabelUI(label_CurrentPassword, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 150);
         setupButtonUI(button_UpdatePassword, "Dialog", 18, 275, Pos.CENTER, 500, 143);
+        
+//        TODO
+        button_UpdatePassword.setOnAction((_) -> {
+            result = dialogUpdateFirstName.showAndWait();
+
+            if (result.isPresent()) {
+                String input = result.get();
+
+                if (!isValidLength(input, MAX_NAME_LENGTH)) {
+                    showNameTooLongAlert("First name");
+                    return;
+                }
+
+                theDatabase.updateFirstName(theUser.getUserName(), input);
+            }
+
+            theDatabase.getUserAccountDetails(theUser.getUserName());
+            String newName = theDatabase.getCurrentFirstName();
+            theUser.setFirstName(newName);
+
+            if (newName == null || newName.length() < 1)
+                label_CurrentFirstName.setText("<none>");
+            else
+                label_CurrentFirstName.setText(newName);
+        });
         
         // First Name
         setupLabelUI(label_FirstName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 200);

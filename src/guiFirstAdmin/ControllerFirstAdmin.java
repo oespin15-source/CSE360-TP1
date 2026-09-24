@@ -185,10 +185,10 @@ public class ControllerFirstAdmin {
 		ViewFirstAdmin.Bar_passwordStrength.setProgress(strengthScore);
         
         // Update the colors and text of the label
-        if (strengthScore <= 16) {
+        if (strengthScore <= 8) {
         	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: red;");
         	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Weak");
-        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        } else if ((strengthScore > 8) && (strengthScore <= 16)) {
         	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: orange;");
         	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Medium");
         } else {
