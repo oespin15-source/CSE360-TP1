@@ -40,7 +40,6 @@ public class ControllerDeleteUser {
         String username =
                 ViewDeleteUser.combobox_User.getValue();
 
-        // Make sure a user was selected
         if (username == null ||
                 username.equals("<Select a User>")) {
 
@@ -48,8 +47,6 @@ public class ControllerDeleteUser {
                     "Please select a user.");
             return;
         }
-
-        // Admin cannot delete their own account
         if (username.equals(
                 ViewDeleteUser.theUser.getUserName())) {
 
@@ -58,7 +55,6 @@ public class ControllerDeleteUser {
             return;
         }
 
-        // Ask for confirmation
         Alert confirmation =
                 new Alert(AlertType.CONFIRMATION);
 
