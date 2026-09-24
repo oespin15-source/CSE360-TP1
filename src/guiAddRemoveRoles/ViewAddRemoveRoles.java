@@ -38,13 +38,10 @@ public class ViewAddRemoveRoles {
 	*/
 	
 	// These are the application values required by the user interface
-	
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
-
 	
 	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
-	
 	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
 	// and a button to allow this user to update the account settings.
 	protected static Label label_PageTitle = new Label();
@@ -78,31 +75,26 @@ public class ViewAddRemoveRoles {
 	protected static Line line_Separator4 = new Line(20, 525, width-20,525);
 	
 	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application, logging
-	// out, and on other pages a return is provided so the user can return to a previous page when
-	// the actions on that page are complete.  Be advised that in most cases in this code, the 
-	// return is to a fixed page as opposed to the actual page that invoked the pages.
+	// out, and a return is provided so the user can return to a previous page when
+	// the actions on that page are complete. 
 	protected static Button button_Return = new Button("Return");
 	protected static Button button_Logout = new Button("Logout");
 	protected static Button button_Quit = new Button("Quit");
-
-	// This is the end of the GUI objects for the page.
 	
 	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewAddRemoveRoles theView;	// Used to determine if instantiation of the class
-												// is needed
+	private static ViewAddRemoveRoles theView;
+											
 	// Reference for the in-memory database so this package has access
 	private static Database theDatabase = applicationMain.FoundationsMain.database;		
 
-	protected static Stage theStage;			// The Stage that JavaFX has established for us
-	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets 
-	protected static User theUser;				// The current user of the application
+	protected static Stage theStage;			
+	protected static Pane theRootPane;			
+	protected static User theUser;				
 	
-	public static Scene theAddRemoveRolesScene = null;	// The Scene each invocation populates
-	protected static String theSelectedUser = "";	// The user whose roles are being updated
-	protected static String theAddRole = "";		// The role being added
-	protected static String theRemoveRole = "";		// The roles being removed
-
-
+	public static Scene theAddRemoveRolesScene = null;	
+	protected static String theSelectedUser = "";	
+	protected static String theAddRole = "";		
+	protected static String theRemoveRole = "";		
 
 	/*-*******************************************************************************************
 
@@ -141,14 +133,8 @@ public class ViewAddRemoveRoles {
 		// singleton instance of this class
 		if (theView == null) theView = new ViewAddRemoveRoles();
 		
-		// Default to no user selected
+		// Default to no user selected. Populate the dynamic aspects of the GUI
 		combobox_SelectUser.getSelectionModel().select(0);
-		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.  This page is different from the others.  Since there are two 
-		// modes (1: user has not been selected, and 2: user has been selected) there are two
-		// lists of widgets to be displayed.  For this reason, we have implemented the following 
-		// two controller methods to deal with this dynamic aspect.
 		ControllerAddRemoveRoles.repaintTheWindow();
 		ControllerAddRemoveRoles.doSelectUser();
 	}
@@ -166,14 +152,9 @@ public class ViewAddRemoveRoles {
 	 * 
 	 */
 	public ViewAddRemoveRoles() {
-		
-		// This page is used by all roles, so we do not specify the role being used		
-			
 		// Create the Pane for the list of widgets and the Scene for the window
 		theRootPane = new Pane();
 		theAddRemoveRolesScene = new Scene(theRootPane, width, height);
-		
-		// Populate the window with the title and other common widgets and set their static state
 		
 		// GUI Area 1
 		label_PageTitle.setText("Add/Removed Roles Page");
@@ -220,12 +201,6 @@ public class ViewAddRemoveRoles {
     
 		setupButtonUI(button_Quit, "Dialog", 18, 210, Pos.CENTER, 570, 540);
 		button_Quit.setOnAction((_) -> {ControllerAddRemoveRoles.performQuit(); });
-		
-		// This is the end of the GUI Widgets for the page
-		
-		// Due to the very dynamic nature of this page, setting the widget into the Root Pane has 
-		// has been delegated to the repaintTheWindow and doSelectUser controller methods.
-		// Don't follow this pattern if formatting of the page does not change dynamically.
 	}	
 
 	/*-*******************************************************************************************
