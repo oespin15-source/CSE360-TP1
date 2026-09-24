@@ -125,6 +125,8 @@ public class ControllerAdminHome {
 	    guiDeleteUser.ViewDeleteUser.displayDeleteUser(
 	            ViewAdminHome.theStage,
 	            ViewAdminHome.theUser);
+		ViewAdminHome.label_NumberOfUsers.setText("Numbers of users: " + 
+				theDatabase.getNumberOfUsers());
 	}
 	
 	/**********
@@ -138,6 +140,8 @@ public class ControllerAdminHome {
 	protected static void listUsers() {
 		guiListAllUsers.ViewListAllUsers.displayListAllUsers(ViewAdminHome.theStage, 
 				ViewAdminHome.theUser);
+		ViewAdminHome.label_NumberOfUsers.setText("Numbers of users: " + 
+				theDatabase.getNumberOfUsers());
 	}
 	
 	/**********
