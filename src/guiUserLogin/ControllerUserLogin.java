@@ -3,6 +3,7 @@ package guiUserLogin;
 import database.Database;
 import entityClasses.User;
 import guiSetOneTimePassword.ControllerSetOneTimePassword;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /*******
@@ -72,12 +73,25 @@ public class ControllerUserLogin {
     	// The username field on the login page refers to an existing username,
     	// so only ensure that the input is not excessively large.
     	// Check input sizes before using them.
-    	if (username.length() > 32 || password.length() > 64) {
-    	    ViewUserLogin.alertUsernamePasswordError.setContentText(
-    	            "Incorrect username/password. Try again!");
+    	if (username.length() < 4)
+    	{
+    		ViewUserLogin.alertUsernamePasswordError.setContentText("ERROR: Username cannot have less than 4 characters. Try again!");
+    	    ViewUserLogin.alertUsernamePasswordError.showAndWait();
+    	    return;	
+    	}
+    	if (username.length() > 32)
+    	{
+    		ViewUserLogin.alertUsernamePasswordError.setContentText("ERROR: Username cannot exceed 32 characters. Try again!");
+    	    ViewUserLogin.alertUsernamePasswordError.showAndWait();
+    	    return;	
+    	}
+    	if (password.length() > 64)
+    	{
+    		ViewUserLogin.alertUsernamePasswordError.setContentText("ERROR: Password cannot exceed 64 characters. Try again!");
     	    ViewUserLogin.alertUsernamePasswordError.showAndWait();
     	    return;
     	}
+    	
     	
 		// Fetch the user and verify the username
      	if (theDatabase.getUserAccountDetails(username) == false) {
@@ -89,13 +103,13 @@ public class ControllerUserLogin {
     		return;
     	}
 		// System.out.println("*** Username is valid");
-		
+
 		// Check to see that the login password matches the account password
     	String actualPassword = theDatabase.getCurrentPassword();
-
-		// First check to see if the login password matches the one-time password for resetting the account password
+    	
+    	// First check to see if the login password matches the one-time password for resetting the account password
 		boolean oneTimePasswordCheck = false;
-    	if (password.compareTo(ControllerSetOneTimePassword.GetTheOneTimePassword()) == 0) {
+    	if (password.compareTo(ControllerSetOneTimePassword.GetTheOneTimePassword()) == 0 && ControllerSetOneTimePassword.GetTheOneTimePassword().compareTo("") != 0) {
     		oneTimePasswordCheck = true;
     	}
     	else if (password.compareTo(actualPassword) != 0) {
@@ -104,7 +118,7 @@ public class ControllerUserLogin {
     		ViewUserLogin.alertUsernamePasswordError.showAndWait();
     		return;
     	}
-		// System.out.println("*** Password is valid for this user");
+    	// System.out.println("*** Password is valid for this user");
 		
 		// Establish this user's details
     	User user = new User(username, password, theDatabase.getCurrentFirstName(), 
