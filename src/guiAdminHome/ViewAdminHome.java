@@ -140,6 +140,13 @@ public class ViewAdminHome {
 		theDatabase.getUserAccountDetails(user.getUserName());
 		applicationMain.FoundationsMain.activeHomePage = theRole;	
 
+		label_UserDetails.setText("User: " + user.getUserName());
+    	label_NumberOfUsers.setText(
+	        "Number of users: " + theDatabase.getNumberOfUsers());
+    	label_NumberOfInvitations.setText(
+	        "Number of outstanding invitations: " +
+	        theDatabase.getNumberOfInvitations());
+		
 		// Set the role for potential users to the default (No role selected)
 		combobox_SelectRole.getSelectionModel().select(0);
 		theStage.setTitle("CSE 360 Foundation Code: Admin Home Page");
