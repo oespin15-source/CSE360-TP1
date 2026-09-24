@@ -1,7 +1,6 @@
 package guiDeleteUser;
 
 import java.util.List;
-
 import database.Database;
 import entityClasses.User;
 import javafx.collections.FXCollections;
@@ -13,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 /*******
  * <p> Title: ViewDeleteUser Class. </p>
  *
@@ -51,6 +51,18 @@ public class ViewDeleteUser {
     private static Button button_Return =
             new Button("Return");
 
+    /**********
+	 * <p> Method: displayDeleteUser(Stage stage, User user) </p>
+	 * 
+	 * <p> Description: This method is the single entry point from outside this package to cause
+	 * the DeleteUser page to be displayed. It sets the Scene onto the stage, and makes it visible
+	 * to the user.
+	 * 
+	 * @param stage specifies the JavaFX Stage to be used for this GUI and it's methods
+	 * 
+	 * @param user specifies the User whose roles will be updated
+	 *
+	 */
     public static void displayDeleteUser(Stage stage, User user) {
 
         theStage = stage;
