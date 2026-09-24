@@ -32,27 +32,16 @@ import inputValidation.PasswordEvaluator;
  */
 
 public class ControllerFirstAdmin {
-	/*-********************************************************************************************
-
-	The controller attributes for this page
 	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
-	*/
-	
+	/* called by the View to perform validation on admin Username */	
 	private static String adminUsername = "";
+	/* called by the View to perform validation on admin Password */
 	private static String adminPassword1 = "";
-	private static String adminPassword2 = "";		
+	/* called by the View to perform validation on admin Password Re-Entering */
+	private static String adminPassword2 = "";
+	/* called by the View and used in this class to instantiate the Database */
 	protected static Database theDatabase = applicationMain.FoundationsMain.database;		
 
-	/*-********************************************************************************************
-
-	The User Interface Actions for this page
-	
-	*/
-	
 	/**
 	 * Default constructor is not used.
 	 */
@@ -71,12 +60,17 @@ public class ControllerFirstAdmin {
 		ViewFirstAdmin.label_UsernameError.setText("");
 	}
 	
-	
 	/**********
 	 * <p> Method: setAdminPassword1() </p>
 	 * 
 	 * <p> Description: This method is called when the user adds text to the password 1 field in
-	 * the View.  A private local copy of what was last entered is kept here.</p>
+	 * the View.  A private local copy of what was last entered is kept here.
+	 * 
+	 * After password is entered, PasswordEvaluator class evaluates it. Immediate feedback is displayed 
+	 * at all times for the user to know when the password is satisfying. 
+	 * 
+	 * Only when satisfied, the Admin password is showing a satisfaction message.
+	 * </p>
 	 * 
 	 */
 	protected static void setAdminPassword1() {
@@ -104,7 +98,10 @@ public class ControllerFirstAdmin {
 	 * <p> Method: setAdminPassword2() </p>
 	 * 
 	 * <p> Description: This method is called when the user adds text to the password 2 field in
-	 * the View.  A private local copy of what was last entered is kept here.</p>
+	 * the View.  A private local copy of what was last entered is kept here.
+	 * 
+	 * Keeps track of currently typed second password and deletes the immediate feedback from the previous method.
+	 * </p>
 	 * 
 	 */
 	protected static void setAdminPassword2() {
@@ -118,12 +115,22 @@ public class ControllerFirstAdmin {
 	 * 
 	 * <p> Description: This method is called when the user presses the button to set up the Admin
 	 * account.  It start by trying to establish a new user and placing that user into the
-	 * database.  If that is successful, we proceed to the UserUpdate page.</p>
+	 * database.  If that is successful, we proceed to the UserUpdate page.
+	 * 
+	 * Using UserNameRecognizer class, the Username is validated.
+	 * If successful, sequentially the password 1 is validated. 
+	 * Once password 1 is satisfying, a final check of equality between password 1 and password 2 is done.
+	 * 
+	 * After validating these 3 inputs, only then the user is officially created, if successful.
+	 * 
+	 * Finally, if all is successful, the user is navigated to the User Update Page.
+	 * 
+	 * However, if password 2 is not equivalent, display error message accordingly, and correction is expected. 
+	 * </p>
 	 * 
 	 */
 	protected static void doSetupAdmin(Stage ps, int r) {
 		
-		// Validate the username before using it to create the Admin account.
 		String usernameErrorMessage =
 				UserNameRecognizer.checkForValidUserName(adminUsername);
 		
@@ -140,13 +147,10 @@ public class ControllerFirstAdmin {
 		    return;
 		}
 		
-		// Make sure the two passwords are the same
 		if (adminPassword1.compareTo(adminPassword2) == 0) {
-        	// Create the passwords and proceed to the user home page
         	User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, 
         			false);
             try {
-            	// Create a new User object with admin role and register in the database
             	theDatabase.register(user);
             	}
             catch (SQLException e) {
@@ -156,12 +160,9 @@ public class ControllerFirstAdmin {
                 System.exit(0);
             }
             
-            // User was established in the database, so navigate to the User Update Page
         	guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
 		}
 		else {
-			// The two passwords are NOT the same, so clear the passwords, explain the passwords
-			// must be the same, and clear the message as soon as the first character is typed.
 			ViewFirstAdmin.text_AdminPassword1.setText("");
 			ViewFirstAdmin.text_AdminPassword2.setText("");
 			ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
@@ -176,15 +177,20 @@ public class ControllerFirstAdmin {
 	 * <p> Description: This method is called when the user adds text to the first 
 	 * password text box. It updates the progress bar's strength score.
 	 * 
+	 * Bar strength is mainly worried about length, character validation is nevertheless performed.
+	 * 
+	 * The bar is updated immediately as characters are typed or erased.
+	 * Bar strengths: 
+	 * less than 8: weak
+	 * between 8 and 16: medium
+	 * more than 16: strong
 	 */	
 	protected static void updateStrength() {
 		String password = ViewFirstAdmin.text_AdminPassword1.getText();
 		double strengthScore = password.length();
         
-		// Update the bar
 		ViewFirstAdmin.Bar_passwordStrength.setProgress(strengthScore);
         
-        // Update the colors and text of the label
         if (strengthScore <= 8) {
         	ViewFirstAdmin.Bar_passwordStrength.setStyle("-fx-accent: red;");
         	ViewFirstAdmin.label_StrengthLabel.setText("Strength: Weak");

@@ -29,65 +29,45 @@ import entityClasses.User;
 
 public class ViewRole1Home {
 	
-	/*-*******************************************************************************************
-
-	Attributes
-	
-	 */
-	
-	// These are the application values required by the user interface
-	
+	/* application values required by the user interface */
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
 
-	// These are the widget attributes for the GUI. There are 3 areas for this GUI.
 	
-	// GUI Area 1: It informs the user about the purpose of this page, whose account is being used,
-	// and a button to allow this user to update the account settings
+	/* widget attributes for the GUI Areas */
 	protected static Label label_PageTitle = new Label();
 	protected static Label label_UserDetails = new Label();
 	protected static Button button_UpdateThisUser = new Button("Account Update");
 	
-	// This is a separator and it is used to partition the GUI for various tasks
+	/* separator and it is used to partition the GUI for various tasks */
 	protected static Line line_Separator1 = new Line(20, 95, width-20, 95);
 
-	// GUI ARea 2: This is a stub, so there are no widgets here.  For an actual role page, this are
-	// would contain the widgets needed for the user to play the assigned role.
-	
-	
-	
-	// This is a separator and it is used to partition the GUI for various tasks
+	/* separator and it is used to partition the GUI for various tasks */
 	protected static Line line_Separator4 = new Line(20, 525, width-20,525);
 	
-	// GUI Area 3: This is last of the GUI areas.  It is used for quitting the application and for
-	// logging out.
+	/* widget attributes for the GUI Areas */
 	protected static Button button_Logout = new Button("Logout");
 	protected static Button button_Quit = new Button("Quit");
 
-	// This is the end of the GUI objects for the page.
 	
-	// These attributes are used to configure the page and populate it with this user's information
-	private static ViewRole1Home theView;		// Used to determine if instantiation of the class
-												// is needed
-
-	// Reference for the in-memory database so this package has access
+	private static ViewRole1Home theView;		
+	
+	/* Reference for the in-memory database so this package has access */
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
 
-	protected static Stage theStage;			// The Stage that JavaFX has established for us	
-	protected static Pane theRootPane;			// The Pane that holds all the GUI widgets
-	protected static User theUser;				// The current logged in User
+	/* The Stage that JavaFX has established for us */
+	protected static Stage theStage;			
+	/* The Pane that holds all the GUI widgets */
+	protected static Pane theRootPane;			
+	/* The current logged in User */
+	protected static User theUser;				
 	
 
-	private static Scene theViewRole1HomeScene;	// The shared Scene each invocation populates
-	protected static final int theRole = 2;		// Admin: 1; Role1: 2; Role2: 3
-
-	/*-*******************************************************************************************
-
-	Constructors
-	
-	 */
-
+	/* The shared Scene each invocation populates */
+	private static Scene theViewRole1HomeScene;	
+	/* Admin: 1; Role1: 2; Role2: 3 */
+	protected static final int theRole = 2;		
 
 	/**********
 	 * <p> Method: displayRole1Home(Stage ps, User user) </p>
@@ -105,6 +85,8 @@ public class ViewRole1Home {
 	 * and the system's current state.  It then sets the Scene onto the stage, and makes it visible
 	 * to the user.
 	 * 
+	 * Lastly, sets the title for the window, displays the page, and waits for the Admin to do something.
+	 * 
 	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
 	 * 
 	 * @param user specifies the User for this GUI and it's methods
@@ -112,21 +94,16 @@ public class ViewRole1Home {
 	 */
 	public static void displayRole1Home(Stage ps, User user) {
 		
-		// Establish the references to the GUI and the current user
 		theStage = ps;
 		theUser = user;
 		
-		// If not yet established, populate the static aspects of the GUI
-		if (theView == null) theView = new ViewRole1Home();		// Instantiate singleton if needed
+		if (theView == null) theView = new ViewRole1Home();		
 		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
 		theDatabase.getUserAccountDetails(user.getUserName());
 		applicationMain.FoundationsMain.activeHomePage = theRole;
 		
 		label_UserDetails.setText("User: " + theUser.getUserName());
 				
-		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundations: Role1 Home Page");
 		theStage.setScene(theViewRole1HomeScene);
 		theStage.show();
@@ -182,13 +159,6 @@ public class ViewRole1Home {
 			label_PageTitle, label_UserDetails, button_UpdateThisUser, line_Separator1,
 	        line_Separator4, button_Logout, button_Quit);
 }
-	
-	
-	/*-********************************************************************************************
-
-	Helper methods to reduce code length
-
-	 */
 	
 	/**********
 	 * Private local method to initialize the standard fields for a label

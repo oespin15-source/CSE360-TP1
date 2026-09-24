@@ -32,31 +32,16 @@ import javafx.scene.Scene;
 
 public class ViewFirstAdmin {
 
-	/*-********************************************************************************************
-
-	Attributes
-
-	 */
-
-	// These are the application values required by the user interface
-	
+	/* application values required by the user interface */	
 	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
 	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
 
-	// These are the widget attributes for the GUI
-	
-	// The GUI informs the user about the purpose of this page, provides three text inputs fields
-	// for the user to specify a username for this account and two copies of the password to be
-	// used (they must match), a button to request that the account be established, and a quit
-	// but to abort the action and stop the application.
+	/* widget attributes for the GUI */	
 	private static Label label_ApplicationTitle = new Label("Foundation Application Startup Page");
-	private static Label label_TitleLine1 = 
-			new Label(" You are the first user.  You must be an administrator.");
+	private static Label label_TitleLine1 = new Label(" You are the first user.  You must be an administrator.");
+	private static Label label_TitleLine2 = new Label("Enter the Admin's Username, the Password twice, and then click on " + "Setup Admin Account.");
 	
-	private static Label label_TitleLine2 = 
-			new Label("Enter the Admin's Username, the Password twice, and then click on " + 
-					"Setup Admin Account.");
-	
+	/* members used for validation and updating the GUI while typing */
 	protected static Label label_PasswordsDoNotMatch = new Label();
 	protected static Label label_UsernameError = new Label();
 	protected static TextField text_AdminUsername = new TextField();
@@ -66,24 +51,18 @@ public class ViewFirstAdmin {
 	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
     protected static Label label_StrengthLabel = new Label();
 
-	// This alert is used should the user enter two passwords that do not match
-	protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
+	/* This alert is used should the user enter two passwords that do not match */	
+    protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
 
-	// This button allow the user to abort creating the first admin account and terminate
-	private static Button button_Quit = new Button("Quit");
+	/* This button allow the user to abort creating the first admin account and terminate */	
+    private static Button button_Quit = new Button("Quit");
 
-	// These attributes are used to configure the page and populate it with this user's information
+	/* These attributes are used to configure the page and populate it with this user's information */
 	protected static Stage theStage;	
 	private static Pane theRootPane;
 	private static Scene theFirstAdminScene = null;
-	private static final int theRole = 1;		// Admin: 1; Role1: 2; Role2: 3
-		
-	
-	/*-********************************************************************************************
-
-	Constructor
-
-	 */
+	/* Admin: 1; Role1: 2; Role2: 3 */	
+	private static final int theRole = 1;		
 	
 	/**********
 	 * <p> Method: public displayFirstAdmin(Stage ps) </p>
@@ -99,17 +78,12 @@ public class ViewFirstAdmin {
 	 */
 	public static void displayFirstAdmin(Stage ps) {
 		
-		// Establish the references to the GUI.  There is no user yet.
-		theStage = ps;			// Establish a reference to the JavaFX Stage
+		theStage = ps;
 		
-		// This page is only called once so there is no need to save the reference to it
-		new ViewFirstAdmin();	// Create an instance of the class
+		new ViewFirstAdmin();	
 		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
-		applicationMain.FoundationsMain.activeHomePage = theRole;	// 1: Admin; 2: Role1; 3 Roles2
+		applicationMain.FoundationsMain.activeHomePage = theRole;
 
-		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: First User Account Setup");	
 		theStage.setScene(theFirstAdminScene);
 		theStage.show();
@@ -141,65 +115,50 @@ public class ViewFirstAdmin {
 	 * for the user to interact with the GUI.  Based on which widget is used, changes to the
 	 * display are made and/or a Controller method is called to perform some action.
 	 * 
+	 * After GUI is all displayed (text, buttons), with text input fields completed, then the 
+	 * progress bar strength is loaded
+	 * 
 	 */
 	private ViewFirstAdmin() {
 
-		// Create the Pane for the list of widgets and the Scene for the window
 		theRootPane = new Pane();
 		theFirstAdminScene = new Scene(theRootPane, width, height);
 
-		// Label theScene with the name of the system startup screen
 		setupLabelUI(label_ApplicationTitle, "Arial", 32, width, Pos.CENTER, 0, 10);
-
-		// Label to display the welcome message for the first user
 		setupLabelUI(label_TitleLine1, "Arial", 24, width, Pos.CENTER, 0, 70);
-
-		// Label to display the welcome message for the first user
 		setupLabelUI(label_TitleLine2, "Arial", 18, width, Pos.CENTER, 0, 130);
-
-		// Establish the text input operand field for the Admin username
-		setupTextUI(text_AdminUsername, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 160, 
-				true);
+		
+		setupTextUI(text_AdminUsername, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 160, true);
 		text_AdminUsername.setPromptText("Enter Admin Username");
-		text_AdminUsername.textProperty().addListener((_, _, _) 
-				-> {ControllerFirstAdmin.setAdminUsername(); });
-
-		// Establish the text input operand field for the password
-		setupTextUI(text_AdminPassword1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210, 
-				true);
+		text_AdminUsername.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminUsername(); });
+		
+		setupTextUI(text_AdminPassword1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210,  true);
 		text_AdminPassword1.setPromptText("Enter Admin Password");
-		text_AdminPassword1.textProperty().addListener((_, _, _)
-				-> {ControllerFirstAdmin.setAdminPassword1();
-				    ControllerFirstAdmin.updateStrength(); });
+		text_AdminPassword1.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminPassword1(); 
+			ControllerFirstAdmin.updateStrength(); });
 
-		// Establish the text input operand field for the password
-		setupTextUI(text_AdminPassword2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, 
-				true);
+		setupTextUI(text_AdminPassword2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
 		text_AdminPassword2.setPromptText("Enter Admin Password Again");
-		text_AdminPassword2.textProperty().addListener((_, _, _) 
-				-> {ControllerFirstAdmin.setAdminPassword2(); });
+		text_AdminPassword2.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminPassword2(); });
 
-
-		// Progress bar for password strength
 		setupProgressBarUI(Bar_passwordStrength, 300, 15, 50, 360);
 		setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 50, 380);
 
-		// Set up the Log In button
 		setupButtonUI(button_AdminSetup, "Dialog", 18, 200, Pos.CENTER, 475, 210);
 		button_AdminSetup.setOnAction((_) -> {
 			ControllerFirstAdmin.doSetupAdmin(theStage,1); 
 			});
 		
-		// Label to display the invalid username error message
 		setupLabelUI(label_UsernameError, "Arial", 18, width, Pos.CENTER, 0, 290);
 
-		// Label to display the Passwords do not match error message
 		setupLabelUI(label_PasswordsDoNotMatch, "Arial", 18, width, Pos.CENTER, 0, 300);
 
 		setupButtonUI(button_Quit, "Dialog", 18, 250, Pos.CENTER, 300, 520);
 		button_Quit.setOnAction((_) -> {ControllerFirstAdmin.performQuit(); });
 
-		// Place all of the just-initialized GUI elements into the pane
 		theRootPane.getChildren().addAll(label_ApplicationTitle, label_TitleLine1,
 				label_TitleLine2, text_AdminUsername, text_AdminPassword1, 
 				text_AdminPassword2, button_AdminSetup, label_UsernameError, label_PasswordsDoNotMatch,

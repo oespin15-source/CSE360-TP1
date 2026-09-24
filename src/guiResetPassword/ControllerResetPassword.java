@@ -24,25 +24,19 @@ import inputValidation.PasswordEvaluator;
 
 public class ControllerResetPassword {
 	
-	/*-********************************************************************************************
-
-	The controller attributes for this page
-	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
-	*/
-	
 	/**
 	 * Default constructor is not used
 	 */
 	public ControllerResetPassword() {
 	}
 	
+	/* called to perform validation on password */
 	private static String resetPassword1 = "";
+	/* called to perform validation on password */
 	private static String resetPassword2 = "";
+	/* correct username is passed later */
 	private static String correctUsername = "";
+	/* called by the View and used in this class to instantiate the Database */
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
 	
 	
@@ -89,15 +83,15 @@ public class ControllerResetPassword {
 	 * <p> Description: This method is called when the user presses on the set password button. It 
 	 * checks if both instances of the new password are identical. If so, it updates the users 
 	 * password in the database. Then, it redirects to the login page and clears the single
-	 * use password. </p>
+	 * use password. 
+	 * 
+	 * As always, helpful error messages are displayed where needed.</p>
 	 * 
 	 */
 	protected static void performPasswordReset() {
 		String passwordErrorMessage =
 		        PasswordEvaluator.evaluatePassword(resetPassword1);
 		if (resetPassword1.compareTo(resetPassword2) != 0) {
-			// The two passwords are NOT the same, so clear the passwords, explain the passwords
-			// must be the same, and clear the message as soon as the first character is typed.
 			ViewResetPassword.text_NewPassword1.setText("");
 			ViewResetPassword.text_NewPassword2.setText("");
 			ViewResetPassword.alertPasswordError.setContentText("The passwords are not identical.");
@@ -105,19 +99,14 @@ public class ControllerResetPassword {
 			return;
 		}
 		if (!passwordErrorMessage.isEmpty()) {
-			// The first password does not match requirements
 			ViewResetPassword.alertPasswordError.setContentText(passwordErrorMessage);
 			ViewResetPassword.alertPasswordError.showAndWait();
 			return;
 		}
 		else {
-			// Change the user's password
 			theDatabase.updatePassword(correctUsername, resetPassword1);
-			// Alert the user it was a success
 			ViewResetPassword.alertNewPasswordSuccess.showAndWait();
-			// Redirect back to the login page
 			guiUserLogin.ViewUserLogin.displayUserLogin(ViewUserLogin.theStage);
-			// Clear the one time password once used
 			guiSetOneTimePassword.ControllerSetOneTimePassword.ClearOneTimePassword();
 		}
 	}
@@ -150,19 +139,24 @@ public class ControllerResetPassword {
 	 * <p> Description: This method is called when the user adds text to the first 
 	 * password text box. It updates the progress bar's strength score.
 	 * 
+	 * Bar strength is mainly worried about length, character validation is nevertheless performed.
+	 * 
+	 * The bar is updated immediately as characters are typed or erased.
+	 * Bar strengths: 
+	 * less than 8: weak
+	 * between 8 and 16: medium
+	 * more than 16: strong
 	 */	
 	protected static void updateStrength() {
 		String password = ViewResetPassword.text_NewPassword1.getText();
 		double strengthScore = password.length();
         
-		// Update the bar
 		ViewResetPassword.Bar_passwordStrength.setProgress(strengthScore);
         
-        // Update the colors and text of the label
-        if (strengthScore <= 16) {
+        if (strengthScore <= 8) {
         	ViewResetPassword.Bar_passwordStrength.setStyle("-fx-accent: red;");
         	ViewResetPassword.label_StrengthLabel.setText("Strength: Weak");
-        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        } else if ((strengthScore > 8) && (strengthScore <= 16)) {
         	ViewResetPassword.Bar_passwordStrength.setStyle("-fx-accent: orange;");
         	ViewResetPassword.label_StrengthLabel.setText("Strength: Medium");
         } else {

@@ -29,16 +29,6 @@ import inputValidation.PasswordEvaluator;
 
 public class ControllerNewAccount {
 	
-	/*-********************************************************************************************
-
-	The User Interface Actions for this page
-	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
-	*/
-
 	/**
 	 * Default constructor is not used.
 	 */
@@ -46,7 +36,7 @@ public class ControllerNewAccount {
 	}
 	
 	
-	// Reference for the in-memory database so this package has access
+	/* called by the View and used in this class to instantiate the Database */
 	private static Database theDatabase = applicationMain.FoundationsMain.database;
 	
 	/**********
@@ -59,11 +49,13 @@ public class ControllerNewAccount {
 	 * The method reaches batch to the view page and to fetch the information needed rather than
 	 * passing that information as parameters.
 	 * 
+	 * After the input is entirely validated, user is created with known email and known role.
+	 * If successful, Database worked, invitation is removed from system.
+	 * 
+	 * 
 	 */	
 	protected static void doCreateUser() {
 		
-		// Fetch the username and password. (We use the first of the two here, but we will validate
-		// that the two password fields are the same before we do anything with it.)
 		String username = ViewNewAccount.text_Username.getText();
 		String password = ViewNewAccount.text_Password1.getText();
 		
@@ -85,21 +77,16 @@ public class ControllerNewAccount {
 		    return;
 		}
 		
-		// Display key information to the log
 		System.out.println("** Account for Username: " + username + "; theInvitationCode: "+
 				ViewNewAccount.theInvitationCode + "; email address: " + 
 				ViewNewAccount.emailAddress + "; Role: " + ViewNewAccount.theRole);
 		
-		// Initialize local variables that will be created during this process
 		int roleCode = 0;
 		User user = null;
-
-		// Make sure the two passwords are the same.	
+	
+		
 		if (ViewNewAccount.text_Password1.getText().
-				compareTo(ViewNewAccount.text_Password2.getText()) == 0) {
-			
-			// The passwords match so we will set up the role and the User object base on the 
-			// information provided in the invitation
+				compareTo(ViewNewAccount.text_Password2.getText()) == 0) { 
 			if (ViewNewAccount.theRole.compareTo("Admin") == 0) {
 				roleCode = 1;
 				user = new User(username, password, "", "", "", "", "", true, false, false);
@@ -115,41 +102,42 @@ public class ControllerNewAccount {
 				System.exit(0);
 			}
 			
-			// Unlike the FirstAdmin, we know the email address, so set that into the user as well.
         	user.setEmailAddress(ViewNewAccount.emailAddress);
 
-        	// Inform the system about which role will be played
 			applicationMain.FoundationsMain.activeHomePage = roleCode;
 			
-        	// Create the account based on user and proceed to the user account update page
             try {
-            	// Create a new User object with the pre-set role and register in the database
             	theDatabase.register(user);
             } catch (SQLException e) {
                 System.err.println("*** ERROR *** Database error: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(0);
             }
-            
-            // The account has been set, so remove the invitation from the system
+            System.out.print(false);
             theDatabase.removeInvitationAfterUse(
             		ViewNewAccount.text_Invitation.getText());
             
-            // Set the database so it has this user and the current user
             theDatabase.getUserAccountDetails(username);
 
-            // Navigate to the Welcome Login Page
             guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewNewAccount.theStage, user);
 		}
 		else {
-			// The two passwords are NOT the same, so clear the passwords, explain the passwords
-			// must be the same, and clear the message as soon as the first character is typed.
 			ViewNewAccount.text_Password1.setText("");
 			ViewNewAccount.text_Password2.setText("");
 			ViewNewAccount.alertUsernamePasswordError.showAndWait();
 		}
 	}
 	
+	/**********
+	 * <p> Method: protected validatePassword() </p>
+	 * 
+	 * <p> Description: This method is called for the password validation of a new user.
+	 * The password validation implemented from HW1 is used.
+	 * 
+	 * While the user types the password, immediate feedback is displayed.
+	 * </p>
+	 * 
+	 */	
 	protected static void validatePassword() {
 	    String password = ViewNewAccount.text_Password1.getText();
 
@@ -177,19 +165,25 @@ public class ControllerNewAccount {
 	 * <p> Description: This method is called when the user adds text to the first 
 	 * password text box. It updates the progress bar's strength score.
 	 * 
+	 * Bar strength is mainly worried about length, character validation is nevertheless performed.
+	 * 
+	 * The bar is updated immediately as characters are typed or erased.
+	 * Bar strengths: 
+	 * less than 8: weak
+	 * between 8 and 16: medium
+	 * more than 16: strong
 	 */	
 	protected static void updateStrength() {
 		String password = ViewNewAccount.text_Password1.getText();
 		double strengthScore = password.length();
         
-		// Update the bar
         ViewNewAccount.Bar_passwordStrength.setProgress(strengthScore);
         
         // Update the colors and text of the label
-        if (strengthScore <= 16) {
+        if (strengthScore <= 8) {
         	ViewNewAccount.Bar_passwordStrength.setStyle("-fx-accent: red;");
         	ViewNewAccount.label_StrengthLabel.setText("Strength: Weak");
-        } else if ((strengthScore > 16) && (strengthScore <= 32)) {
+        } else if ((strengthScore > 8) && (strengthScore <= 16)) {
         	ViewNewAccount.Bar_passwordStrength.setStyle("-fx-accent: orange;");
         	ViewNewAccount.label_StrengthLabel.setText("Strength: Medium");
         } else {
