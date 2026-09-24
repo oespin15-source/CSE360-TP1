@@ -14,6 +14,10 @@ import javafx.stage.Stage;
 import entityClasses.User;
 import inputValidation.EmailAddressRecognizer;
 import javafx.scene.control.Alert;
+import inputValidation.PasswordEvaluator;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.PasswordField;
 
 /*******
  * <p> Title: ViewUserUpdate Class. </p>
@@ -270,30 +274,46 @@ public class ViewUserUpdate {
         setupLabelUI(label_CurrentPassword, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 150);
         setupButtonUI(button_UpdatePassword, "Dialog", 18, 275, Pos.CENTER, 500, 143);
         
-//        TODO
         button_UpdatePassword.setOnAction((_) -> {
-            result = dialogUpdateFirstName.showAndWait();
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Update Password");
+            dialog.setHeaderText("Enter a new password");
 
-            if (result.isPresent()) {
-                String input = result.get();
+            PasswordField passwordField = new PasswordField();
+            passwordField.setPromptText("New password");
 
-                if (!isValidLength(input, MAX_NAME_LENGTH)) {
-                    showNameTooLongAlert("First name");
-                    return;
-                }
+            dialog.getDialogPane().setContent(passwordField);
+            dialog.getDialogPane().getButtonTypes().addAll(
+                    ButtonType.OK, ButtonType.CANCEL);
 
-                theDatabase.updateFirstName(theUser.getUserName(), input);
+            dialog.setResultConverter(button ->
+                    button == ButtonType.OK ? passwordField.getText() : null);
+
+            Optional<String> passwordResult = dialog.showAndWait();
+            if (passwordResult.isEmpty()) {
+                return;
             }
 
-            theDatabase.getUserAccountDetails(theUser.getUserName());
-            String newName = theDatabase.getCurrentFirstName();
-            theUser.setFirstName(newName);
+            String newPassword = passwordResult.get();
+            String errorMessage = PasswordEvaluator.evaluatePassword(newPassword);
 
-            if (newName == null || newName.length() < 1)
-                label_CurrentFirstName.setText("<none>");
-            else
-                label_CurrentFirstName.setText(newName);
+            if (!errorMessage.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid Password");
+                alert.setHeaderText("The password does not meet the requirements.");
+                alert.setContentText(errorMessage);
+                alert.showAndWait();
+                return;
+            }
+
+            theDatabase.updatePassword(theUser.getUserName(), newPassword);
+            theUser.setPassword(newPassword);
+            label_CurrentPassword.setText(newPassword);
         });
+        
+        
+        
+        
         
         // First Name
         setupLabelUI(label_FirstName, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 200);
