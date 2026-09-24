@@ -4,11 +4,6 @@ import entityClasses.User;
 import javafx.stage.Stage;
 
 public class ControllerUserUpdate {
-	/*-********************************************************************************************
-
-	The Controller for ViewUserUpdate 
-	
-	**********************************************************************************************/
 
 	/**********
 	 * <p> Title: ControllerUserUpdate Class</p>
