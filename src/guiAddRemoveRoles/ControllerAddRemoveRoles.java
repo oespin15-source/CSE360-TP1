@@ -32,11 +32,7 @@ public class ControllerAddRemoveRoles {
 	/*-********************************************************************************************
 
 	User Interface Actions for this page
-	
-	This controller is not a class that gets instantiated.  Rather, it is a collection of protected
-	static methods that can be called by the View (which is a singleton instantiated object) and 
-	the Model is often just a stub, or will be a singleton instantiated object.
-	
+
 	 */
 
 	/**
@@ -104,10 +100,6 @@ public class ControllerAddRemoveRoles {
 					ViewAddRemoveRoles.button_Logout,
 					ViewAddRemoveRoles.button_Quit);
 		}
-		
-		// Add the list of widgets to the stage and show it
-		
-		// Set the title for the window
 		ViewAddRemoveRoles.theStage.setTitle("CSE 360 Foundation Code: Admin Opertaions Page");
 		ViewAddRemoveRoles.theStage.setScene(ViewAddRemoveRoles.theAddRemoveRolesScene);
 		ViewAddRemoveRoles.theStage.show();
