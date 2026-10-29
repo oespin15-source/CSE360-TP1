@@ -1,0 +1,255 @@
+package guiFirstAdmin;
+
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+
+
+/*******
+ * <p> Title: ViewFirstAdmin Class</p>
+ * 
+ * <p> Description: The FirstAdmin Page View.  This class is used to require the very first user of
+ * the system to specify an Admin Username and Password when there is no database for the
+ * application.  This avoids the common weakness practice of hard coding credentials into the 
+ * application.</p>
+ * 
+ * <p> Copyright: Lynn Robert Carter © 2025 </p>
+ * 
+ * @author Lynn Robert Carter
+ * 
+ * @version 1.00		2025-08-15 Initial version
+ *  
+ */
+
+public class ViewFirstAdmin {
+
+	/* application values required by the user interface */	
+	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
+
+	/* widget attributes for the GUI */	
+	private static Label label_ApplicationTitle = new Label("Foundation Application Startup Page");
+	private static Label label_TitleLine1 = new Label(" You are the first user.  You must be an administrator.");
+	private static Label label_TitleLine2 = new Label("Enter the Admin's Username, the Password twice, and then click on " + "Setup Admin Account.");
+	
+	/* members used for validation and updating the GUI while typing */
+	protected static Label label_PasswordsDoNotMatch = new Label();
+	protected static Label label_UsernameError = new Label();
+	protected static TextField text_AdminUsername = new TextField();
+	protected static PasswordField text_AdminPassword1 = new PasswordField();
+	protected static PasswordField text_AdminPassword2 = new PasswordField();
+	private static Button button_AdminSetup = new Button("Setup Admin Account");
+	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
+    protected static Label label_StrengthLabel = new Label();
+
+	/* This alert is used should the user enter two passwords that do not match */	
+    protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
+
+	/* This button allow the user to abort creating the first admin account and terminate */	
+    private static Button button_Quit = new Button("Quit");
+
+	/* These attributes are used to configure the page and populate it with this user's information */
+	protected static Stage theStage;	
+	private static Pane theRootPane;
+	private static Scene theFirstAdminScene = null;
+	/* Admin: 1; Role1: 2; Role2: 3 */	
+	private static final int theRole = 1;		
+	
+	/**********
+	 * <p> Method: public displayFirstAdmin(Stage ps) </p>
+	 * 
+	 * <p> Description: This method is called when the application first starts. It create an
+	 * an instance of the View class.  
+	 * 
+	 * NOTE: As described below, this code does not implement MVC using the singleton pattern used
+	 * by most of the pages as the code is written this way because we know with certainty that it
+	 * will only be called once.  For this reason, we directly call the private class constructor.
+	 * 
+	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
+	 */
+	public static void displayFirstAdmin(Stage ps) {
+		
+		theStage = ps;
+		
+		new ViewFirstAdmin();	
+		
+		applicationMain.FoundationsMain.activeHomePage = theRole;
+
+		theStage.setTitle("CSE 360 Foundation Code: First User Account Setup");	
+		theStage.setScene(theFirstAdminScene);
+		theStage.show();
+	}
+
+	/**********
+	 * <p> Method: private ViewFirstAdmin() </p>
+	 * 
+	 * <p> Description: This constructor is called when the application first starts. It must 
+	 * handle when no user has been established.  It is never called again, either during the first
+	 * run of the program after reboot or during normal operations of the program.  (This page is
+	 * only used when there is no database for the application or there is a database, but there
+	 * no users in the database.
+	 * 
+	 * If there is no database or there is a database, but there are no users, it means that the
+	 * person starting the system is an administrator, so a special GUI is provided to allow this
+	 * Admin to create an account by setting a username and password.
+	 * 
+	 * If there is at least one user, this page is not called.  Since this is only used one when
+	 * the system is being set up, this MVC code does not use a singleton protocol.  For this
+	 * reason, do not use this as a typical MVC pattern.</p>
+	 * 
+	 * This is the View of the Model, View, Controller architectural pattern.  Due to how it is
+	 * called, it does not follow the usual singleton implementation pattern as explained above.
+	 * 
+	 * The view sets up the window and all of the Graphical User Interface (GUI) widgets.  Once
+	 * they are all set, the window is displayed to the user, the View returns to the starting main
+	 * method, and that execution thread ends.  The JavaFX thread continues to "execute" waiting
+	 * for the user to interact with the GUI.  Based on which widget is used, changes to the
+	 * display are made and/or a Controller method is called to perform some action.
+	 * 
+	 * After GUI is all displayed (text, buttons), with text input fields completed, then the 
+	 * progress bar strength is loaded
+	 * 
+	 */
+	private ViewFirstAdmin() {
+
+		theRootPane = new Pane();
+		theFirstAdminScene = new Scene(theRootPane, width, height);
+
+		setupLabelUI(label_ApplicationTitle, "Arial", 32, width, Pos.CENTER, 0, 10);
+		setupLabelUI(label_TitleLine1, "Arial", 24, width, Pos.CENTER, 0, 70);
+		setupLabelUI(label_TitleLine2, "Arial", 18, width, Pos.CENTER, 0, 130);
+		
+		setupTextUI(text_AdminUsername, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 160, true);
+		text_AdminUsername.setPromptText("Enter Admin Username");
+		text_AdminUsername.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminUsername(); });
+		
+		setupTextUI(text_AdminPassword1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210,  true);
+		text_AdminPassword1.setPromptText("Enter Admin Password");
+		text_AdminPassword1.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminPassword1(); 
+			ControllerFirstAdmin.updateStrength(); });
+
+		setupTextUI(text_AdminPassword2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
+		text_AdminPassword2.setPromptText("Enter Admin Password Again");
+		text_AdminPassword2.textProperty().addListener((_, _, _) -> {
+			ControllerFirstAdmin.setAdminPassword2(); });
+
+		setupProgressBarUI(Bar_passwordStrength, 300, 15, 50, 360);
+		setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 50, 380);
+
+		setupButtonUI(button_AdminSetup, "Dialog", 18, 200, Pos.CENTER, 475, 210);
+		button_AdminSetup.setOnAction((_) -> {
+			ControllerFirstAdmin.doSetupAdmin(theStage,1); 
+			});
+		
+		setupLabelUI(label_UsernameError, "Arial", 18, width, Pos.CENTER, 0, 290);
+
+		setupLabelUI(label_PasswordsDoNotMatch, "Arial", 18, width, Pos.CENTER, 0, 300);
+
+		setupButtonUI(button_Quit, "Dialog", 18, 250, Pos.CENTER, 300, 520);
+		button_Quit.setOnAction((_) -> {ControllerFirstAdmin.performQuit(); });
+
+		theRootPane.getChildren().addAll(label_ApplicationTitle, label_TitleLine1,
+				label_TitleLine2, text_AdminUsername, text_AdminPassword1, 
+				text_AdminPassword2, button_AdminSetup, label_UsernameError, label_PasswordsDoNotMatch,
+				button_Quit, Bar_passwordStrength, label_StrengthLabel);
+	}
+	
+	
+	/*-********************************************************************************************
+
+	Helper methods to reduce code length
+
+	 */
+	
+	/**********
+	 * Private local method to initialize the standard fields for a label
+	 * 
+	 * @param l		The Label object to be initialized
+	 * @param ff	The font to be used
+	 * @param f		The size of the font to be used
+	 * @param w		The width of the Label
+	 * @param p		The alignment (e.g. left, centered, or right)
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+
+	private void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, double y){
+		l.setFont(Font.font(ff, f));
+		l.setMinWidth(w);
+		l.setAlignment(p);
+		l.setLayoutX(x);
+		l.setLayoutY(y);		
+	}
+
+
+	/**********
+	 * Private local method to initialize the standard fields for a button
+	 * 
+	 * @param b		The Button object to be initialized
+	 * @param ff	The font to be used
+	 * @param f		The size of the font to be used
+	 * @param w		The width of the Button
+	 * @param p		The alignment (e.g. left, centered, or right)
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, double y){
+		b.setFont(Font.font(ff, f));
+		b.setMinWidth(w);
+		b.setAlignment(p);
+		b.setLayoutX(x);
+		b.setLayoutY(y);		
+	}
+
+	
+	/**********
+	 * Private local method to initialize the standard fields for a text field
+	 * 
+	 * @param t		The TextField object to be initialized
+	 * @param ff	The font to be used
+	 * @param f		The size of the font to be used
+	 * @param w		The width of the Button
+	 * @param p		The alignment (e.g. left, centered, or right)
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 * @param e		The flag (Boolean) that specifies if this field is editable
+	 */
+	private void setupTextUI(TextField t, String ff, double f, double w, Pos p, double x, double y, 
+			boolean e){
+		t.setFont(Font.font(ff, f));
+		t.setMinWidth(w);
+		t.setMaxWidth(w);
+		t.setAlignment(p);
+		t.setLayoutX(x);
+		t.setLayoutY(y);		
+		t.setEditable(e);
+	}	
+
+
+	/**********
+	 * Private local method to initialize the standard fields for a progress bar
+	 * 
+	 * @param p		The progress bar object to be initialized
+	 * @param w		The width of the progress bar
+	 * @param h		The height of the progress bar
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupProgressBarUI(ProgressBar p, double w, double h, double x, double y){
+		p.setPrefWidth(w);
+		p.setPrefHeight(h);
+		p.setLayoutX(x);
+		p.setLayoutY(y);		
+	}
+}

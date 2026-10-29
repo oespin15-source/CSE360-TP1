@@ -1,0 +1,268 @@
+package guiNewAccount;
+
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import database.Database;
+import entityClasses.User;
+
+/*******
+ * <p> Title: ViewNewAccount Class. </p>
+ * 
+ * <p> Description: The ViewNewAccount Page is used to enable a potential user with an invitation
+ * code to establish an account after they have specified an invitation code on the standard login
+ * page. </p>
+ * 
+ * <p> Copyright: Lynn Robert Carter © 2025 </p>
+ * 
+ * @author Lynn Robert Carter
+ * 
+ * @version 1.00		2025-08-19 Initial version
+ *  
+ */
+
+public class ViewNewAccount {
+	
+	/* application values required by the user interface */
+	private static double width = applicationMain.FoundationsMain.WINDOW_WIDTH;
+	private static double height = applicationMain.FoundationsMain.WINDOW_HEIGHT;
+	
+	/* widget attributes for the GUI */
+	private static Label label_ApplicationTitle = 
+			new Label("Foundation Application Account Setup Page");
+    protected static Label label_NewUserCreation = new Label(" User Account Creation.");
+    protected static Label label_NewUserLine = new Label("Please enter a username and a password.");
+    
+	/* members used for validation and updating the GUI while typing */
+    protected static TextField text_Username = new TextField();
+    protected static PasswordField text_Password1 = new PasswordField();
+    protected static PasswordField text_Password2 = new PasswordField();
+    protected static Button button_UserSetup = new Button("User Setup");
+    protected static TextField text_Invitation = new TextField();
+    protected static Label label_PasswordRequirements = new Label();
+	protected static ProgressBar Bar_passwordStrength = new ProgressBar();
+    protected static Label label_StrengthLabel = new Label();
+
+	/* This alert is used should the invitation code be invalid */
+    protected static Alert alertInvitationCodeIsInvalid = new Alert(AlertType.INFORMATION);
+
+	/* This alert is used should the user enter two passwords that do not match */
+	protected static Alert alertUsernamePasswordError = new Alert(AlertType.INFORMATION);
+	
+	/* This alert is used should the user enter an invalid username */
+	protected static Alert alertUsernameError = new Alert(AlertType.INFORMATION);
+	
+	/* This alert is used should the user enter an invalid password */
+	protected static Alert alertPasswordError = new Alert(AlertType.INFORMATION);
+
+    protected static Button button_Quit = new Button("Quit");
+
+	/* These attributes are used to configure the page and populate it with this user's information. Is instantiation of the class needed? */	
+    private static ViewNewAccount theView;
+
+	/* Reference for the in-memory database so this package has access */
+	private static Database theDatabase = applicationMain.FoundationsMain.database;		
+
+	/** The Stage that JavaFX has established for us */
+	protected static Stage theStage;			
+	/* The Pane that holds all the GUI widgets */
+	private static Pane theRootPane;			
+	/* The current logged in User */
+	protected static User theUser;				
+   
+	/* The invitation code links to an email address and a role for this user */
+    protected static String theInvitationCode;
+	/* Established here for use by the controller */
+    protected static String emailAddress;		
+	/* Established here for use by the controller */
+    protected static String theRole;			
+	/** Access to the User Update page's GUI Widgets */	
+    public static Scene theNewAccountScene = null;	
+	
+
+	/**********
+	 * <p> Method: displayNewAccount(Stage ps, String ic) </p>
+	 * 
+	 * <p> Description: This method is the single entry point from outside this package to cause
+	 * the NewAccount page to be displayed.
+	 * 
+	 * It first sets up very shared attributes so we don't have to pass parameters.
+	 * 
+	 * It then checks to see if the page has been setup.  If not, it instantiates the class, 
+	 * initializes all the static aspects of the GUI widgets (e.g., location on the page, font,
+	 * size, and any methods to be performed).
+	 * 
+	 * After the instantiation, the code then populates the elements that change based on the user
+	 * and the system's current state.  It then sets the Scene onto the stage, and makes it visible
+	 * to the user.
+	 * 
+	 * This is the only way some component of the system can cause a New User Account page to appear.  
+	 * The first time, the class is created and initialized.  
+	 * Every subsequent call it is reused with only the elements that differ being initialized.
+	 * 
+	 * If there is an issue with the invitation code, display a dialog box saying that are when it is 
+	 * acknowledged, return so the proper code can be entered.
+	 * 
+	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
+	 * 
+	 * @param ic specifies the user's invitation code for this GUI and it's methods
+	 * 
+	 */
+	public static void displayNewAccount(Stage ps, String ic) {
+
+		theStage = ps;				
+		theInvitationCode = ic;		
+		
+		if (theView == null) theView = new ViewNewAccount();
+		
+		text_Username.setText("");	
+		text_Password1.setText("");	
+		text_Password2.setText("");
+		
+		theRole = theDatabase.getRoleGivenAnInvitationCode(theInvitationCode);
+		
+		if (theRole.length() == 0) {
+			alertInvitationCodeIsInvalid.showAndWait();	
+			return;					
+		}
+		
+		emailAddress = theDatabase.getEmailAddressUsingCode(theInvitationCode);
+		
+    	theRootPane.getChildren().clear();
+    	theRootPane.getChildren().addAll(label_NewUserCreation, label_NewUserLine, text_Username,
+    			text_Password1, text_Password2, label_PasswordRequirements, button_UserSetup, button_Quit,
+				Bar_passwordStrength, label_StrengthLabel);    	
+
+		theStage.setTitle("CSE 360 Foundation Code: New User Account Setup");	
+        theStage.setScene(theNewAccountScene);
+		theStage.show();
+	}
+	
+	/**********
+	 * <p> Constructor: ViewNewAccount() </p>
+	 * 
+	 * <p> Description: This constructor is called just once, the first time a new account needs to
+	 * be created.  It establishes all of the common GUI widgets for the page so they are only
+	 * created once and reused when needed.
+	 * 
+	 * The constructor creates the Pane for the list of widgets and the Scene for the window.
+	 * Labels these, and establishes the input fields. Additionally, the strength password bar is set.
+	 * 		
+	 */
+	private ViewNewAccount() {
+		
+		theRootPane = new Pane();
+		theNewAccountScene = new Scene(theRootPane, width, height);
+
+		setupLabelUI(label_ApplicationTitle, "Arial", 28, width, Pos.CENTER, 0, 5);
+    	setupLabelUI(label_NewUserCreation, "Arial", 32, width, Pos.CENTER, 0, 10);
+    	setupLabelUI(label_NewUserLine, "Arial", 24, width, Pos.CENTER, 0, 70);
+		setupTextUI(text_Username, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 160, true);
+		text_Username.setPromptText("Enter the Username");
+		setupTextUI(text_Password1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210, true);
+		text_Password1.setPromptText("Enter the Password");	
+		text_Password1.textProperty().addListener((_, _, _) -> {
+		    ControllerNewAccount.validatePassword();
+			ControllerNewAccount.updateStrength();
+		});
+		
+		setupTextUI(text_Password2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
+		text_Password2.setPromptText("Enter the Password Again");
+
+		setupLabelUI(label_PasswordRequirements, "Arial", 16, width, Pos.CENTER, 0, 310);
+
+		setupProgressBarUI(Bar_passwordStrength, 300, 15, 50, 360);
+		setupLabelUI(label_StrengthLabel, "Arial", 16, 100, Pos.CENTER, 50, 380);
+		
+		alertInvitationCodeIsInvalid.setTitle("Invalid Invitation Code");
+		alertInvitationCodeIsInvalid.setHeaderText("The invitation code is not valid.");
+		alertInvitationCodeIsInvalid.setContentText("Correct the code and try again.");
+
+		alertUsernamePasswordError.setTitle("Passwords Do Not Match");
+		alertUsernamePasswordError.setHeaderText("The two passwords must be identical.");
+		alertUsernamePasswordError.setContentText("Correct the passwords and try again.");
+		
+		alertUsernameError.setTitle("Invalid Username");
+		alertUsernameError.setHeaderText("The username is not valid.");
+		
+		alertPasswordError.setTitle("Invalid Password");
+		alertPasswordError.setHeaderText("The password does not meet the requirements.");
+
+        setupButtonUI(button_UserSetup, "Dialog", 18, 200, Pos.CENTER, 475, 210);
+        button_UserSetup.setOnAction((_) -> {ControllerNewAccount.doCreateUser(); });
+		
+        setupButtonUI(button_Quit, "Dialog", 18, 250, Pos.CENTER, 300, 540);
+        button_Quit.setOnAction((_) -> {ControllerNewAccount.performQuit(); });
+	}
+	
+	
+	/**********
+	 * Private local method to initialize the standard fields for a label
+	 */
+	
+	private void setupLabelUI(Label l, String ff, double f, double w, Pos p, double x, double y){
+		l.setFont(Font.font(ff, f));
+		l.setMinWidth(w);
+		l.setAlignment(p);
+		l.setLayoutX(x);
+		l.setLayoutY(y);		
+	}
+	
+	
+	/**********
+	 * Private local method to initialize the standard fields for a button
+	 * 
+	 * @param b		The Button object to be initialized
+	 * @param ff	The font to be used
+	 * @param f		The size of the font to be used
+	 * @param w		The width of the Button
+	 * @param p		The alignment (e.g. left, centered, or right)
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupButtonUI(Button b, String ff, double f, double w, Pos p, double x, double y){
+		b.setFont(Font.font(ff, f));
+		b.setMinWidth(w);
+		b.setAlignment(p);
+		b.setLayoutX(x);
+		b.setLayoutY(y);		
+	}
+
+	/**********
+	 * Private local method to initialize the standard fields for a text field
+	 */
+	private void setupTextUI(TextField t, String ff, double f, double w, Pos p, double x, double y, boolean e){
+		t.setFont(Font.font(ff, f));
+		t.setMinWidth(w);
+		t.setMaxWidth(w);
+		t.setAlignment(p);
+		t.setLayoutX(x);
+		t.setLayoutY(y);		
+		t.setEditable(e);
+	}	
+
+	/**********
+	 * Private local method to initialize the standard fields for a progress bar
+	 * 
+	 * @param p		The progress bar object to be initialized
+	 * @param w		The width of the progress bar
+	 * @param h		The height of the progress bar
+	 * @param x		The location from the left edge (x axis)
+	 * @param y		The location from the top (y axis)
+	 */
+	private void setupProgressBarUI(ProgressBar p, double w, double h, double x, double y){
+		p.setPrefWidth(w);
+		p.setPrefHeight(h);
+		p.setLayoutX(x);
+		p.setLayoutY(y);		
+	}
+}
